@@ -19,11 +19,12 @@ ${OpenIGTLink_DIR}
 
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
+include(OpenIGTLinkConfig)
 
 include_directories(
  ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${OpenCV_INCLUDE_DIRS}
+  ${OpenIGTLink_INCLUDE_DIRS}
 )
 
 link_directories(
@@ -83,6 +84,8 @@ add_executable( ${PROJECT_NAME} ${CONSOLEFLAG}
   
 target_link_libraries(${PROJECT_NAME}
   ${KIT_target_libraries}
+   ${OpenIGTLink_LIBRARIES}
+
 )
 
 qt5_use_modules(${PROJECT_NAME} Widgets Xml)

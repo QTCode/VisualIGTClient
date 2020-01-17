@@ -2,7 +2,6 @@
 #include <QWidget>
 #include "ui_IGTLinkClinet.h"
 
-
 class IGTLinkClinetPrivate;
 class IGTLinkClinet : public QWidget
 {
