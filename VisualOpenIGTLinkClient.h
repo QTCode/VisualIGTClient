@@ -6,6 +6,14 @@
 
 Q_DECLARE_METATYPE(std::vector<double>);
 
+enum OpenIGTLinkQueryType
+{
+	TYPE_IMAGE,
+	TYPE_LABEL,
+	TYPE_POINT,
+	//TYPE_GET_IMAGE
+};
+
 class VisualOpenIGTLinkClientPrivate;
 class  VisualOpenIGTLinkClient : public QThread
 {
@@ -14,8 +22,16 @@ public:
 	VisualOpenIGTLinkClient(QObject* parent = Q_NULLPTR);
 	~VisualOpenIGTLinkClient();
 
-	void ConnectToServer(QString address = QString("127.0.0.1"), int port = 18944);
 	void SetDeviceAddress(QString address = QString("127.0.0.1"), int port = 18944);
+
+	void QueryTrackingData();
+	void StopQueryTrackData();
+
+	void QueryImages();
+	void QueryImage(QString imageID);
+
+	void QueryMetadata(OpenIGTLinkQueryType type);
+	
 	
 signals:
 	void signal_GetSensor(QString sname, QVariant spose);
@@ -24,13 +40,14 @@ signals:
 
 protected slots:
 	void onQueryOpenigtLinkServer();
-	void onConnectIGTServer();
 
 protected:
 	QScopedPointer<VisualOpenIGTLinkClientPrivate> d_ptr;
 	void run();
 	int ConnectDevice();
 	void QueryDevice();
+
+
 
 private:
 	Q_DECLARE_PRIVATE(VisualOpenIGTLinkClient);
