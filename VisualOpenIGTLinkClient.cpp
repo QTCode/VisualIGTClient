@@ -414,10 +414,10 @@ void VisualOpenIGTLinkClient::QueryImage(QString imageID)
 	Q_D(VisualOpenIGTLinkClient);
 }
 
-void VisualOpenIGTLinkClient::QueryMetadata(OpenIGTLinkQueryType type)
+void VisualOpenIGTLinkClient::QueryMetadata(int id)
 {
 	Q_D(VisualOpenIGTLinkClient);
-	if (type == OpenIGTLinkQueryType::TYPE_IMAGE)
+	if (id == OpenIGTLinkQueryType::TYPE_IMAGE)
 	{
 		emit signal_log("QueryImageMate");
 		// Send request data
@@ -427,7 +427,7 @@ void VisualOpenIGTLinkClient::QueryMetadata(OpenIGTLinkQueryType type)
 		getImageMetaMsg->Pack();
 		d->m_igtSocket->Send(getImageMetaMsg->GetPackPointer(), getImageMetaMsg->GetPackSize());
 	}
-	else if(type == OpenIGTLinkQueryType::TYPE_LABEL)
+	else if(id == OpenIGTLinkQueryType::TYPE_LABEL)
 	{
 		igtl::LabelMetaMessage::Pointer lableMetaMsg;
 
@@ -436,7 +436,7 @@ void VisualOpenIGTLinkClient::QueryMetadata(OpenIGTLinkQueryType type)
 		lableMetaMsg->Pack();
 		d->m_igtSocket->Send(lableMetaMsg->GetPackPointer(), lableMetaMsg->GetPackSize());
 	}
-	else if (type == OpenIGTLinkQueryType::TYPE_POINT)
+	else if (id == OpenIGTLinkQueryType::TYPE_POINT)
 	{
 		igtl::PointMessage::Pointer pointMsg;
 		pointMsg = igtl::PointMessage::New();

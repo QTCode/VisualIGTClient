@@ -16,6 +16,10 @@ protected:
 protected slots:
 	void onConnectToServer();
 	void onPrintLog(QString logErr);
+	void onQueryRemoteList();
+	void onQueryTypeChanged(int id);
+	void onGetMetaItem();
+
 
 private:
 

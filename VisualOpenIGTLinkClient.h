@@ -30,7 +30,7 @@ public:
 	void QueryImages();
 	void QueryImage(QString imageID);
 
-	void QueryMetadata(OpenIGTLinkQueryType type);
+	void QueryMetadata(int id);
 	
 	
 signals:

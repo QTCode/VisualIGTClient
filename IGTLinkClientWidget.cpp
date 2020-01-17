@@ -2,6 +2,10 @@
 #include "ui_IGTLinkClientWidget.h"
 #include "VisualOpenIGTLinkClient.h"
 
+#include <QButtonGroup>
+#include <QRadioButton>
+#include <QDebug>
+
 class IGTLinkClientWidgetPrivate : public Ui_IGTLinkClientWidget
 {
 	Q_DECLARE_PUBLIC(IGTLinkClientWidget);
@@ -16,6 +20,7 @@ public:
 	int    interval = (int)(1000.0 / fps);
 	int m_igtHeadVersion = 1;
 	VisualOpenIGTLinkClient* m_IGTClient = nullptr;
+	QButtonGroup m_TypeButtonGroup;
 
 };
 
@@ -24,17 +29,26 @@ IGTLinkClientWidgetPrivate::IGTLinkClientWidgetPrivate(IGTLinkClientWidget& obje
 	: q_ptr(&object)
 {
 }
+
 //-----------------------------------------------------------------------
 IGTLinkClientWidget::IGTLinkClientWidget(QWidget* parent)
 	: d_ptr(new IGTLinkClientWidgetPrivate(*this))
 {
 	Q_D(IGTLinkClientWidget);
 	d->setupUi(this);
+
+	d->m_TypeButtonGroup.addButton(d->typeImageRBtn, OpenIGTLinkQueryType::TYPE_IMAGE);
+	d->m_TypeButtonGroup.addButton(d->typeLabelRBtn, OpenIGTLinkQueryType::TYPE_LABEL);
+	d->m_TypeButtonGroup.addButton(d->typePointRBtn, OpenIGTLinkQueryType::TYPE_POINT);
+	QObject::connect(&d->m_TypeButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onQueryTypeChanged(int)));
+
+
+
 	d->m_IGTClient = new VisualOpenIGTLinkClient();
+
 	QObject::connect(d->m_IGTClient, &VisualOpenIGTLinkClient::signal_log, this, &IGTLinkClientWidget::onPrintLog);
-
 	QObject::connect(d->connectBtn, &QPushButton::clicked, this,&IGTLinkClientWidget::onConnectToServer);
-
+	QObject::connect(d->updateBtn, &QPushButton::clicked, this, &IGTLinkClientWidget::onQueryRemoteList);
 }
 
 IGTLinkClientWidget::~IGTLinkClientWidget()
@@ -60,6 +74,12 @@ void IGTLinkClientWidget::onPrintLog(QString logErr)
 	d->logEdit->append(logErr);
 }
 
+void IGTLinkClientWidget::onQueryRemoteList()
+{
+	Q_D(IGTLinkClientWidget);
+	d->m_IGTClient->QueryMetadata(d->m_TypeButtonGroup.checkedId());
+}
+
 void IGTLinkClientWidget::onConnectToServer()
 {
 	Q_D(IGTLinkClientWidget);
@@ -68,4 +88,39 @@ void IGTLinkClientWidget::onConnectToServer()
 
 	d->m_IGTClient->SetDeviceAddress(address.toStdString().c_str(), port.toInt());
 	d->m_IGTClient->start();
+}
+
+//------------------------------------------------------------------------------
+void IGTLinkClientWidget::onQueryTypeChanged(int id)
+{
+	Q_D(IGTLinkClientWidget);
+	qDebug() << "onQueryTypeChanged:" << id;
+	d->tableWidget->clearContents();
+	d->tableWidget->setRowCount(0);
+	QStringList list;
+	switch (id)
+	{
+	case OpenIGTLinkQueryType::TYPE_IMAGE:
+		list << QObject::tr("Image ID") << QObject::tr("Image Name")
+			<< QObject::tr("Patient ID") << QObject::tr("Patient Name")
+			<< QObject::tr("Modality") << QObject::tr("Time");
+		break;
+	case OpenIGTLinkQueryType::TYPE_LABEL:
+		list << QObject::tr("Image ID") << QObject::tr("Image Name")
+			<< QObject::tr("Owner Image") << QObject::tr("")
+			<< QObject::tr("");
+		break;
+	case OpenIGTLinkQueryType::TYPE_POINT:
+		list << QObject::tr("Group ID") << QObject::tr("")
+			<< QObject::tr("") << QObject::tr("")
+			<< QObject::tr("");
+		break;
+	}
+	d->tableWidget->setColumnCount(list.size());
+	d->tableWidget->setHorizontalHeaderLabels(list);
+}
+
+void IGTLinkClientWidget::onGetMetaItem()
+{
+	Q_D(IGTLinkClientWidget);
 }
