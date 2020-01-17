@@ -1,25 +1,22 @@
-<UI version="4.0" >
- <class>IGTLinkClinetClass</class>
- <widget class="QWidget" name="IGTLinkClinetClass" >
-  <property name="objectName" >
-   <string notr="true">IGTLinkClinetClass</string>
-  </property>
-  <property name="geometry" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>IGTLinkClinet</class>
+ <widget class="QWidget" name="IGTLinkClinet">
+  <property name="geometry">
    <rect>
-	<x>0</x>
-	<y>0</y>
-	<width>600</width>
-	<height>400</height>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>400</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>IGTLinkClinet</string>
   </property>
  </widget>
- <layoutDefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
+ <layoutdefault spacing="6" margin="11"/>
  <resources>
-   <include location="IGTLinkClinet.qrc"/>
+  <include location="IGTLinkClinet.qrc"/>
  </resources>
  <connections/>
-</UI>
+</ui>
