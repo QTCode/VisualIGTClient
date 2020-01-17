@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>IGTLinkClinet</class>
- <widget class="QWidget" name="IGTLinkClinet">
+ <class>IGTLinkClientWidget</class>
+ <widget class="QWidget" name="IGTLinkClientWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>IGTLinkClinet</string>
+   <string>IGTLinkClientWidget</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -26,7 +26,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit_2">
+        <widget class="QLineEdit" name="ipLEdit">
          <property name="text">
           <string>127.0.0.1</string>
          </property>
@@ -44,7 +44,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit">
+        <widget class="QLineEdit" name="portLEdit">
          <property name="text">
           <string>18944</string>
          </property>
@@ -126,7 +126,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="IGTLinkClinet.qrc"/>
+  <include location="IGTLinkClientWidget.qrc"/>
  </resources>
  <connections/>
 </ui>

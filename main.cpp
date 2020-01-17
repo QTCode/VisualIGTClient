@@ -1,10 +1,10 @@
-#include "IGTLinkClinet.h"
+#include "IGTLinkClientWidget.h"
 #include <QtWidgets/QApplication>
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	IGTLinkClinet w;
+	IGTLinkClientWidget w;
 	w.show();
 	return a.exec();
 }

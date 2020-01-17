@@ -33,20 +33,20 @@ link_directories(
 
 set(SRCS
   main.cpp  
-  IGTLinkClinet.h
-  IGTLinkClinet.cpp
+  IGTLinkClientWidget.h
+  IGTLinkClientWidget.cpp
 )
 
 set(MOC_SRCS
-  IGTLinkClinet.h
+  IGTLinkClientWidget.h
 )
 
 set(UI_SRCS
-  IGTLinkClinet.ui
+  IGTLinkClientWidget.ui
 )
 
 set(RCC_SRCS
-  IGTLinkClinet.qrc
+  IGTLinkClientWidget.qrc
 )
 
 qt5_wrap_cpp(KIT_MOC_CXX ${MOC_SRCS})
