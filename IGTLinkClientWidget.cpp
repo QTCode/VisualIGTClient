@@ -1,14 +1,6 @@
 #include "IGTLinkClientWidget.h"
 #include "ui_IGTLinkClientWidget.h"
-
-//igt
-#include "igtlOSUtil.h"
-#include "igtlMessageHeader.h"
-#include "igtlTransformMessage.h"
-#include "igtlPositionMessage.h"
-#include "igtlImageMessage.h"
-#include "igtlClientSocket.h"
-#include "igtlStatusMessage.h"
+#include "VisualOpenIGTLinkClient.h"
 
 class IGTLinkClientWidgetPrivate : public Ui_IGTLinkClientWidget
 {
@@ -22,8 +14,8 @@ public:
 	IGTLinkClientWidgetPrivate(IGTLinkClientWidget& object);
 	int fps = 20;
 	int    interval = (int)(1000.0 / fps);
-	igtl::ClientSocket::Pointer m_socket;
 	int m_igtHeadVersion = 1;
+	VisualOpenIGTLinkClient* m_IGTClient = nullptr;
 
 };
 
@@ -38,30 +30,42 @@ IGTLinkClientWidget::IGTLinkClientWidget(QWidget* parent)
 {
 	Q_D(IGTLinkClientWidget);
 	d->setupUi(this);
-	d->m_socket = igtl::ClientSocket::New();
-	QObject::connect(d->connectBtn, &QPushButton::clicked, this,&IGTLinkClientWidget::ConnectToServer);
+	d->m_IGTClient = new VisualOpenIGTLinkClient();
+	QObject::connect(d->m_IGTClient, &VisualOpenIGTLinkClient::signal_log, this, &IGTLinkClientWidget::onPrintLog);
+
+	QObject::connect(d->connectBtn, &QPushButton::clicked, this,&IGTLinkClientWidget::onConnectToServer);
+
 }
 
 IGTLinkClientWidget::~IGTLinkClientWidget()
 {
-
+	Q_D(IGTLinkClientWidget);
+	if (d->m_IGTClient)
+	{
+		delete d->m_IGTClient;
+		d->m_IGTClient = nullptr;
+	}
+	if (nullptr != d->m_IGTClient)
+	{
+		d->m_IGTClient->requestInterruption();
+		d->m_IGTClient->quit();
+		d->m_IGTClient->wait();
+		d->m_IGTClient->deleteLater();
+	}
 }
 
-void IGTLinkClientWidget::ConnectToServer()
+void IGTLinkClientWidget::onPrintLog(QString logErr)
+{
+	Q_D(IGTLinkClientWidget);
+	d->logEdit->append(logErr);
+}
+
+void IGTLinkClientWidget::onConnectToServer()
 {
 	Q_D(IGTLinkClientWidget);
 	QString address = d->ipLEdit->text();
 	QString port = d->portLEdit->text();
 
-
-	int r = d->m_socket->ConnectToServer(address.toStdString().c_str(), port.toInt());
-	if (r != 0)
-	{
-		d->logEdit->append(QString("Cannot connect to the server."));
-	}
-	else
-	{
-		d->logEdit->append(QString("connect to the server:") + address);
-	}
-
+	d->m_IGTClient->SetDeviceAddress(address.toStdString().c_str(), port.toInt());
+	d->m_IGTClient->start();
 }

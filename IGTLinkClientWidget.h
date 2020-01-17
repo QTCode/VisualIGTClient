@@ -14,7 +14,8 @@ public:
 protected:
 	QScopedPointer<IGTLinkClientWidgetPrivate> d_ptr;
 protected slots:
-	void ConnectToServer();
+	void onConnectToServer();
+	void onPrintLog(QString logErr);
 
 private:
 
