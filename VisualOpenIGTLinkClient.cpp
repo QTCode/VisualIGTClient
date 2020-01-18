@@ -451,19 +451,19 @@ void VisualOpenIGTLinkClient::QueryMetadata(int id)
 	}
 	else if(id == OpenIGTLinkQueryType::TYPE_LABEL)
 	{
-		igtl::LabelMetaMessage::Pointer lableMetaMsg;
+		igtl::GetLabelMetaMessage::Pointer getLableMetaMsg;
 
-		lableMetaMsg = igtl::LabelMetaMessage::New();
-		lableMetaMsg->SetDeviceName("");
-		lableMetaMsg->Pack();
-		d->m_igtSocket->Send(lableMetaMsg->GetPackPointer(), lableMetaMsg->GetPackSize());
+		getLableMetaMsg = igtl::GetLabelMetaMessage::New();
+		getLableMetaMsg->SetDeviceName("");
+		getLableMetaMsg->Pack();
+		d->m_igtSocket->Send(getLableMetaMsg->GetPackPointer(), getLableMetaMsg->GetPackSize());
 	}
 	else if (id == OpenIGTLinkQueryType::TYPE_POINT)
 	{
-		igtl::PointMessage::Pointer pointMsg;
-		pointMsg = igtl::PointMessage::New();
-		pointMsg->Pack();
-		d->m_igtSocket->Send(pointMsg->GetPackPointer(), pointMsg->GetPackSize());
+		igtl::GetPointMessage::Pointer getPointMsg;
+		getPointMsg = igtl::GetPointMessage::New();
+		getPointMsg->Pack();
+		d->m_igtSocket->Send(getPointMsg->GetPackPointer(), getPointMsg->GetPackSize());
 	}
 }
 
