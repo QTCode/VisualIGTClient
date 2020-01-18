@@ -1,6 +1,7 @@
 #pragma once
 #include <QWidget>
 #include "ui_IGTLinkClientWidget.h"
+#include "VisualOpenIGTLinkClient.h"
 
 class IGTLinkClientWidgetPrivate;
 class IGTLinkClientWidget : public QWidget
@@ -19,6 +20,9 @@ protected slots:
 	void onQueryRemoteList();
 	void onQueryTypeChanged(int id);
 	void onGetMetaItem();
+
+	void onUpdateIMGMetaTabWidget(IMGMetaData metaData);
+	void onUpdateLBMetatabWidget(LBMetaData metaData);
 
 
 private:

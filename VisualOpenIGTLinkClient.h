@@ -4,7 +4,30 @@
 #include <QVariant>
 #include <QMetaType>
 
-Q_DECLARE_METATYPE(std::vector<double>);
+typedef struct IMGMetaData
+{
+	int index;
+	std::string DeviceName;
+	std::string Name;
+	std::string PatientID;
+	std::string PatientName;
+	std::string Modality;
+	std::string Timess;
+}IMGMetaData;
+
+typedef struct LBMetaData
+{
+	int index;
+	std::string DeviceName;
+	std::string Name;
+	std::string Owner;
+}LBMetaData;
+
+
+
+Q_DECLARE_METATYPE(IMGMetaData);
+Q_DECLARE_METATYPE(LBMetaData);
+
 
 enum OpenIGTLinkQueryType
 {
@@ -37,7 +60,8 @@ signals:
 	void signal_GetSensor(QString sname, QVariant spose);
 	void signal_QueryOpenIGTLink();
 	void signal_log(QString logText);
-
+	void getIMGMeta(IMGMetaData);
+	void getLBMeta(LBMetaData);
 protected slots:
 	void onQueryOpenigtLinkServer();
 

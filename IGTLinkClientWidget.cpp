@@ -41,14 +41,13 @@ IGTLinkClientWidget::IGTLinkClientWidget(QWidget* parent)
 	d->m_TypeButtonGroup.addButton(d->typeLabelRBtn, OpenIGTLinkQueryType::TYPE_LABEL);
 	d->m_TypeButtonGroup.addButton(d->typePointRBtn, OpenIGTLinkQueryType::TYPE_POINT);
 	QObject::connect(&d->m_TypeButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onQueryTypeChanged(int)));
-
-
-
-	d->m_IGTClient = new VisualOpenIGTLinkClient();
-
-	QObject::connect(d->m_IGTClient, &VisualOpenIGTLinkClient::signal_log, this, &IGTLinkClientWidget::onPrintLog);
 	QObject::connect(d->connectBtn, &QPushButton::clicked, this,&IGTLinkClientWidget::onConnectToServer);
 	QObject::connect(d->updateBtn, &QPushButton::clicked, this, &IGTLinkClientWidget::onQueryRemoteList);
+
+	d->m_IGTClient = new VisualOpenIGTLinkClient();
+	QObject::connect(d->m_IGTClient, &VisualOpenIGTLinkClient::signal_log, this, &IGTLinkClientWidget::onPrintLog);
+	QObject::connect(d->m_IGTClient, &VisualOpenIGTLinkClient::getIMGMeta, this, &IGTLinkClientWidget::onUpdateIMGMetaTabWidget);
+	QObject::connect(d->m_IGTClient, &VisualOpenIGTLinkClient::getLBMeta, this, &IGTLinkClientWidget::onUpdateLBMetatabWidget);
 }
 
 IGTLinkClientWidget::~IGTLinkClientWidget()
@@ -123,4 +122,35 @@ void IGTLinkClientWidget::onQueryTypeChanged(int id)
 void IGTLinkClientWidget::onGetMetaItem()
 {
 	Q_D(IGTLinkClientWidget);
+}
+
+void IGTLinkClientWidget::onUpdateIMGMetaTabWidget(IMGMetaData metaData)
+{
+	Q_D(IGTLinkClientWidget);
+	QTableWidgetItem* deviceItem = new QTableWidgetItem(metaData.DeviceName.c_str());
+	QTableWidgetItem* nameItem = new QTableWidgetItem(metaData.Name.c_str());
+	QTableWidgetItem* patientIdItem = new QTableWidgetItem(metaData.PatientID.c_str());
+	QTableWidgetItem* patientNameItem = new QTableWidgetItem(metaData.PatientName.c_str());
+	QTableWidgetItem* modalityItem = new QTableWidgetItem(metaData.Modality.c_str());
+	QTableWidgetItem* timeItem = new QTableWidgetItem(metaData.Timess.c_str());
+
+	d->tableWidget->setItem(metaData.index, 0, deviceItem);
+	d->tableWidget->setItem(metaData.index, 1, nameItem);
+	d->tableWidget->setItem(metaData.index, 2, patientIdItem);
+	d->tableWidget->setItem(metaData.index, 3, patientNameItem);
+	d->tableWidget->setItem(metaData.index, 4, modalityItem);
+	d->tableWidget->setItem(metaData.index, 5, timeItem);
+}
+
+void IGTLinkClientWidget::onUpdateLBMetatabWidget(LBMetaData metaData)
+{
+	Q_D(IGTLinkClientWidget);
+
+	QTableWidgetItem* deviceItem = new QTableWidgetItem(metaData.DeviceName.c_str());
+	QTableWidgetItem* nameItem = new QTableWidgetItem(metaData.Name.c_str());
+	QTableWidgetItem* ownerItem = new QTableWidgetItem(metaData.Owner.c_str());
+
+	d->tableWidget->setItem(metaData.index, 0, deviceItem);
+	d->tableWidget->setItem(metaData.index, 1, nameItem);
+	d->tableWidget->setItem(metaData.index, 2, ownerItem);
 }

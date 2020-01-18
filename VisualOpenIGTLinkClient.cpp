@@ -293,6 +293,13 @@ int VisualOpenIGTLinkClientPrivate::ReceiveLabelMeta(igtl::ClientSocket::Pointer
 			std::cerr << " Size       : ( " << size[0] << ", " << size[1] << ", " << size[2] << ")" << std::endl;
 			std::cerr << " Owner      : " << lbMetaElement->GetOwner() << std::endl;
 			std::cerr << "================================" << std::endl;
+			
+			LBMetaData metaData;
+			metaData.index = i;
+			metaData.DeviceName = lbMetaElement->GetDeviceName();
+			metaData.Name = lbMetaElement->GetName();
+			metaData.Owner = lbMetaElement->GetOwner();
+			emit q->getLBMeta(metaData);
 		}
 		return 1;
 	}
@@ -343,6 +350,19 @@ int VisualOpenIGTLinkClientPrivate::ReceiveImageMeta(igtl::ClientSocket::Pointer
 			std::cerr << " Size       : ( " << size[0] << ", " << size[1] << ", " << size[2] << ")" << std::endl;
 			std::cerr << " ScalarType : " << (int)imgMetaElement->GetScalarType() << std::endl;
 			std::cerr << "================================" << std::endl;
+
+			IMGMetaData metaData;
+			metaData.index = i;
+			metaData.DeviceName = imgMetaElement->GetDeviceName();
+			metaData.Name = imgMetaElement->GetName();
+			metaData.Modality = imgMetaElement->GetModality();
+			metaData.PatientID = imgMetaElement->GetPatientID();
+			metaData.PatientName = imgMetaElement->GetPatientName();
+
+			//更新tableWidget 显示
+			emit q->getIMGMeta(metaData);
+		 
+
 		}
 		return 1;
 	}
@@ -355,6 +375,8 @@ VisualOpenIGTLinkClient::VisualOpenIGTLinkClient(QObject* parent)
 	:QThread(parent), d_ptr(new VisualOpenIGTLinkClientPrivate(this))
 {
 	Q_D(VisualOpenIGTLinkClient);
+	qRegisterMetaType<IMGMetaData>("IMGMetaData");
+	qRegisterMetaType<LBMetaData>("LBMetaData");
     
 	d->m_igtSocket = igtl::ClientSocket::New();
 	d->m_igtQueryInterval = 1000 / d->m_igtQueryFPS;
