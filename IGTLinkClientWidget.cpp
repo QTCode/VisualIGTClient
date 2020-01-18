@@ -53,11 +53,6 @@ IGTLinkClientWidget::IGTLinkClientWidget(QWidget* parent)
 IGTLinkClientWidget::~IGTLinkClientWidget()
 {
 	Q_D(IGTLinkClientWidget);
-	if (d->m_IGTClient)
-	{
-		delete d->m_IGTClient;
-		d->m_IGTClient = nullptr;
-	}
 	if (nullptr != d->m_IGTClient)
 	{
 		d->m_IGTClient->requestInterruption();
@@ -127,6 +122,8 @@ void IGTLinkClientWidget::onGetMetaItem()
 void IGTLinkClientWidget::onUpdateIMGMetaTabWidget(IMGMetaData metaData)
 {
 	Q_D(IGTLinkClientWidget);
+	d->tableWidget->setRowCount(metaData.index + 1);
+	qDebug() <<"onUpdateIMGMetaTabWidget:"<< metaData.DeviceName.c_str();
 	QTableWidgetItem* deviceItem = new QTableWidgetItem(metaData.DeviceName.c_str());
 	QTableWidgetItem* nameItem = new QTableWidgetItem(metaData.Name.c_str());
 	QTableWidgetItem* patientIdItem = new QTableWidgetItem(metaData.PatientID.c_str());
@@ -145,7 +142,8 @@ void IGTLinkClientWidget::onUpdateIMGMetaTabWidget(IMGMetaData metaData)
 void IGTLinkClientWidget::onUpdateLBMetatabWidget(LBMetaData metaData)
 {
 	Q_D(IGTLinkClientWidget);
-
+	qDebug() << "onUpdateLBMetatabWidget:" << metaData.DeviceName.c_str();
+	d->tableWidget->setRowCount(metaData.index + 1);
 	QTableWidgetItem* deviceItem = new QTableWidgetItem(metaData.DeviceName.c_str());
 	QTableWidgetItem* nameItem = new QTableWidgetItem(metaData.Name.c_str());
 	QTableWidgetItem* ownerItem = new QTableWidgetItem(metaData.Owner.c_str());
