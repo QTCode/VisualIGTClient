@@ -24,7 +24,7 @@ typedef struct LBMetaData
 }LBMetaData;
 
 
-
+Q_DECLARE_METATYPE(std::string);
 Q_DECLARE_METATYPE(IMGMetaData);
 Q_DECLARE_METATYPE(LBMetaData);
 
@@ -51,7 +51,7 @@ public:
 	void StopQueryTrackData();
 
 	void QueryImages();
-	void QueryImage(QString imageID);
+	void QueryImage(std::string imageID);
 
 	void QueryMetadata(int id);
 	

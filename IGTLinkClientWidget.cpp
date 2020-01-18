@@ -40,6 +40,7 @@ IGTLinkClientWidget::IGTLinkClientWidget(QWidget* parent)
 	d->m_TypeButtonGroup.addButton(d->typeImageRBtn, OpenIGTLinkQueryType::TYPE_IMAGE);
 	d->m_TypeButtonGroup.addButton(d->typeLabelRBtn, OpenIGTLinkQueryType::TYPE_LABEL);
 	d->m_TypeButtonGroup.addButton(d->typePointRBtn, OpenIGTLinkQueryType::TYPE_POINT);
+
 	QObject::connect(&d->m_TypeButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onQueryTypeChanged(int)));
 	QObject::connect(d->connectBtn, &QPushButton::clicked, this,&IGTLinkClientWidget::onConnectToServer);
 	QObject::connect(d->updateBtn, &QPushButton::clicked, this, &IGTLinkClientWidget::onQueryRemoteList);
@@ -117,6 +118,32 @@ void IGTLinkClientWidget::onQueryTypeChanged(int id)
 void IGTLinkClientWidget::onGetMetaItem()
 {
 	Q_D(IGTLinkClientWidget);
+
+	QList<QTableWidgetSelectionRange> selectRange(d->tableWidget->selectedRanges());
+	for (int selectionIndex = 0; selectionIndex < selectRange.size(); selectionIndex++)
+	{
+		int topRowIndex = selectRange.at(selectionIndex).topRow();
+		// Get the item identifier from the table
+		QTableWidgetItem* selectedItem = d->tableWidget->item(topRowIndex, 0);
+		if (!selectedItem)
+		{
+			qCritical() << Q_FUNC_INFO << " failed: selected item is empty";
+			continue;
+		}
+		std::string dataId(selectedItem->text().toLatin1());
+		switch (d->m_TypeButtonGroup.checkedId())
+		{
+		case OpenIGTLinkQueryType::TYPE_IMAGE:
+		case OpenIGTLinkQueryType::TYPE_LABEL:
+			d->m_IGTClient->QueryImage(dataId);
+			break;
+		case OpenIGTLinkQueryType::TYPE_POINT:
+			//this->getPointList(dataId);
+			break;
+		default:
+			qCritical() << Q_FUNC_INFO << " failed: unknown item type selected";
+		}
+	}
 }
 
 void IGTLinkClientWidget::onUpdateIMGMetaTabWidget(IMGMetaData metaData)

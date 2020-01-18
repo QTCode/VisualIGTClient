@@ -431,9 +431,14 @@ void VisualOpenIGTLinkClient::QueryImages()
 	d->m_igtSocket->Send(imageMsg->GetPackPointer(), imageMsg->GetPackSize());
 }
 
-void VisualOpenIGTLinkClient::QueryImage(QString imageID)
+void VisualOpenIGTLinkClient::QueryImage(std::string imageID)
 {
 	Q_D(VisualOpenIGTLinkClient);
+	emit signal_log("QueryImage");
+	igtl::GetImageMessage::Pointer getImageMsg;
+	getImageMsg = igtl::GetImageMessage::New();
+	getImageMsg->SetDeviceName(imageID);
+	d->m_igtSocket->Send(getImageMsg->GetPackPointer(), getImageMsg->GetPackSize());
 }
 
 void VisualOpenIGTLinkClient::QueryMetadata(int id)
