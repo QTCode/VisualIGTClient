@@ -6,6 +6,21 @@
 typedef unsigned char BLBUint8;
 typedef char BLBInt8;
 
+
+enum OpenIGTLinkQueryType
+{
+	TYPE_IMAGE = 0,
+	TYPE_LABEL,
+	TYPE_POINT,
+	TYPE_TRAJ,
+	TYPE_CAPABIL,
+	TYPE_COLOR,
+	TYPE_DEFAULT
+
+
+	//TYPE_GET_IMAGE
+};
+
 typedef struct IMGMetaData
 {
 	int index;

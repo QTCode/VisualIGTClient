@@ -12,21 +12,6 @@ Q_DECLARE_METATYPE(IMGMetaData);
 Q_DECLARE_METATYPE(LBMetaData);
 Q_DECLARE_METATYPE(TRAJData);
 
-
-enum OpenIGTLinkQueryType
-{
-	TYPE_IMAGE,
-	TYPE_LABEL,
-	TYPE_POINT,
-	TYPE_TRAJ,
-	TYPE_CAPABIL,
-	TYPE_COLOR,
-	TYPE_DEFAULT
-
-
-	//TYPE_GET_IMAGE
-};
-
 class VisualBrainLabClientPrivate;
 class  VisualBrainLabClient : public QThread
 {
