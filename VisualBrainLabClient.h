@@ -53,6 +53,7 @@ signals:
 	void getIMGMeta(IMGMetaData);
 	void getLBMeta(LBMetaData);
 	void getTRAJ(TRAJData);
+	void getPoint(PointData);
 protected slots:
 	void onQueryOpenigtLinkServer();
 

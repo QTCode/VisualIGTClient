@@ -25,6 +25,8 @@ protected slots:
 	void onUpdateIMGMetaTabWidget(IMGMetaData metaData);
 	void onUpdateLBMetaTabWidget(LBMetaData metaData);
 
+	void onUpdatePointDataTabWidget(PointData pData);
+
 	void onUpdateTRAJDataTabWidget(TRAJData trajData);
 
 

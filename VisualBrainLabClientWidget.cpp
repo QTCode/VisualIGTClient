@@ -59,6 +59,7 @@ VisualBrainLabClientWidget::VisualBrainLabClientWidget(QWidget* parent)
 	QObject::connect(d->m_brainLabClient, &VisualBrainLabClient::getIMGMeta, this, &VisualBrainLabClientWidget::onUpdateIMGMetaTabWidget);
 	QObject::connect(d->m_brainLabClient, &VisualBrainLabClient::getLBMeta, this, &VisualBrainLabClientWidget::onUpdateLBMetaTabWidget);
 	QObject::connect(d->m_brainLabClient, &VisualBrainLabClient::getTRAJ, this, &VisualBrainLabClientWidget::onUpdateTRAJDataTabWidget);
+	QObject::connect(d->m_brainLabClient, &VisualBrainLabClient::getPoint, this, &VisualBrainLabClientWidget::onUpdatePointDataTabWidget);
 }
 
 VisualBrainLabClientWidget::~VisualBrainLabClientWidget()
@@ -116,14 +117,17 @@ void VisualBrainLabClientWidget::onQueryTypeChanged(int id)
 			<< QObject::tr("");
 		break;
 	case OpenIGTLinkQueryType::TYPE_POINT:
-		list << QObject::tr("Group ID") << QObject::tr("")
-			<< QObject::tr("") << QObject::tr("")
+		list << QObject::tr("Group Name") << QObject::tr("Name")
+			<< QObject::tr("Point") << QObject::tr("Diameter")
 			<< QObject::tr("");
 		break;
 	case OpenIGTLinkQueryType::TYPE_TRAJ:
 		list << QObject::tr("Name") << QObject::tr("Group Name")
 			<< QObject::tr("Type") << QObject::tr("Entry")
 			<< QObject::tr("Target");
+		break;
+	default:
+		break;
 	}
 	d->tableWidget->setColumnCount(list.size());
 	d->tableWidget->setHorizontalHeaderLabels(list);
@@ -203,24 +207,47 @@ void VisualBrainLabClientWidget::onUpdateLBMetaTabWidget(LBMetaData metaData)
 	d->tableWidget->setItem(metaData.index, 2, ownerItem);
 }
 
+void VisualBrainLabClientWidget::onUpdatePointDataTabWidget(PointData pData)
+{
+	Q_D(VisualBrainLabClientWidget);
+
+	qDebug() << "onUpdatePointDataTabWidget:" << pData.Name.c_str();
+	d->tableWidget->setRowCount(pData.index + 1);
+	
+	QTableWidgetItem* groupNameItem = new QTableWidgetItem(pData.GroupName.c_str());
+	QTableWidgetItem * nameItem = new QTableWidgetItem(pData.Name.c_str());
+
+
+	QString point = QString("(%1,%2,%3)").arg(pData.CoordinatePoint[0]).arg(pData.CoordinatePoint[1]).arg(pData.CoordinatePoint[2]);
+	QTableWidgetItem* pointItem = new QTableWidgetItem(point);
+
+	QTableWidgetItem* diameterItem = new QTableWidgetItem(QString::number(pData.Diameter));
+
+
+	d->tableWidget->setItem(pData.index, 0, groupNameItem);
+	d->tableWidget->setItem(pData.index, 1, nameItem);
+	d->tableWidget->setItem(pData.index, 2, pointItem);
+	d->tableWidget->setItem(pData.index, 3, diameterItem);
+}
+
 void VisualBrainLabClientWidget::onUpdateTRAJDataTabWidget(TRAJData trajData)
 {
 	Q_D(VisualBrainLabClientWidget);
 
 	qDebug() << "onUpdateTRAJDataTabWidget:" << trajData.Name.c_str();
 	d->tableWidget->setRowCount(trajData.index + 1);
-	
+
 	QTableWidgetItem * nameItem = new QTableWidgetItem(trajData.Name.c_str());
-	QTableWidgetItem* groupNameItem = new QTableWidgetItem(trajData.GroupName.c_str());
+	QTableWidgetItem * groupNameItem = new QTableWidgetItem(trajData.GroupName.c_str());
 
 	int type = static_cast<int>(trajData.Type);
-	QTableWidgetItem* typeItem = new QTableWidgetItem(QString::number(type));
+	QTableWidgetItem * typeItem = new QTableWidgetItem(QString::number(type));
 
 	QString entry = QString("(%1,%2,%3)").arg(trajData.EntryPoint[0]).arg(trajData.EntryPoint[1]).arg(trajData.EntryPoint[2]);
-	QTableWidgetItem* entryItem = new QTableWidgetItem(entry);
+	QTableWidgetItem * entryItem = new QTableWidgetItem(entry);
 
 	QString target = QString("(%1,%2,%3)").arg(trajData.TargetPoint[0]).arg(trajData.TargetPoint[1]).arg(trajData.TargetPoint[2]);
-	QTableWidgetItem* targetItem = new QTableWidgetItem(entry);
+	QTableWidgetItem * targetItem = new QTableWidgetItem(entry);
 
 	d->tableWidget->setItem(trajData.index, 0, nameItem);
 	d->tableWidget->setItem(trajData.index, 1, groupNameItem);

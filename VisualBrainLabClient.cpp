@@ -224,6 +224,14 @@ int VisualBrainLabClientPrivate::ReceivePoint(igtl::Socket* socket, igtl::Messag
 
 			igtlFloat32 pos[3];
 			pointElement->GetPosition(pos);
+			PointData pData;
+			pData.index = i;
+			pData.Name = pointElement->GetName();
+			pData.GroupName = pointElement->GetGroupName();
+			pointElement->GetRGBA(pData.Color);
+			pData.Diameter = pointElement->GetRadius() * 2.0f;
+			strcpy(pData.OwnerImage, pointElement->GetOwner());
+			emit q->getPoint(pData);
 
 			std::cerr << "========== Element #" << i << " ==========" << std::endl;
 			std::cerr << " Name      : " << pointElement->GetName() << std::endl;
@@ -462,6 +470,8 @@ VisualBrainLabClient::VisualBrainLabClient(QObject* parent)
 	qRegisterMetaType<IMGMetaData>("IMGMetaData");
 	qRegisterMetaType<LBMetaData>("LBMetaData");
 	qRegisterMetaType<TRAJData>("TRAJData");
+	qRegisterMetaType<PointData>("PointData");
+
     
 	d->m_igtSocket = igtl::ClientSocket::New();
 	d->m_igtQueryInterval = 1000 / d->m_igtQueryFPS;
