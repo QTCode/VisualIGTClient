@@ -22,7 +22,9 @@ protected slots:
 	void onGetMetaItem();
 
 	void onUpdateIMGMetaTabWidget(IMGMetaData metaData);
-	void onUpdateLBMetatabWidget(LBMetaData metaData);
+	void onUpdateLBMetaTabWidget(LBMetaData metaData);
+
+	void onUpdateTRAJDataTabWidget(TRAJData trajData);
 
 
 private:

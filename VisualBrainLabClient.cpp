@@ -36,6 +36,7 @@ public:
 	VisualBrainLabClientPrivate::VisualBrainLabClientPrivate(VisualBrainLabClient* parent);
 	int ReceiveTransform(igtl::Socket * socket, igtl::MessageHeader::Pointer& header);
 	int ReceiveImage(igtl::Socket* socket, igtl::MessageHeader::Pointer& header);
+	int ReceiveTRAJ(igtl::Socket* socket, igtl::MessageHeader::Pointer& header);
 	int ReceiveLabelMeta(igtl::ClientSocket::Pointer& socket, igtl::MessageHeader::Pointer& header);
 	int ReceiveImageMeta(igtl::ClientSocket::Pointer& socket, igtl::MessageHeader::Pointer& header);
 
@@ -253,6 +254,51 @@ int VisualBrainLabClientPrivate::ReceiveImage(igtl::Socket* socket, igtl::Messag
 
 }
 
+int VisualBrainLabClientPrivate::ReceiveTRAJ(igtl::Socket* socket, igtl::MessageHeader::Pointer& header)
+{
+	Q_Q(VisualBrainLabClient);
+
+	std::cerr << "Receiving TRAJ data type." << std::endl;
+
+	// Create a message buffer to receive transform data
+	igtl::TrajectoryMessage::Pointer trajMsg;
+	trajMsg = igtl::TrajectoryMessage::New();
+	trajMsg->SetMessageHeader(header);
+	trajMsg->AllocatePack();
+
+	// Receive transform data from the socket
+	socket->Receive(trajMsg->GetPackBodyPointer(), trajMsg->GetPackBodySize());
+
+	// Deserialize the transform data
+	// If you want to skip CRC check, call Unpack() without argument.
+	int c = trajMsg->Unpack(1);
+
+	if (c & igtl::MessageHeader::UNPACK_BODY) // if CRC check is OK
+	{
+		int nElements = trajMsg->GetNumberOfTrajectoryElement();
+		for (int i = 0; i < nElements; i++)
+		{
+			igtl::TrajectoryElement::Pointer trajElement;
+			trajMsg->GetTrajectoryElement(i, trajElement);
+			// Retrive the traj data
+			TRAJData trajData;
+			trajData.index = i;
+			trajData.Name = trajElement->GetName();
+			trajData.GroupName = trajElement->GetGroupName();
+			trajData.Type = trajElement->GetType();
+			trajData.Diameter = trajElement->GetRadius()*2.0f;
+			trajElement->GetEntryPosition(trajData.EntryPoint[0], trajData.EntryPoint[1], trajData.EntryPoint[2]);
+			trajElement->GetTargetPosition(trajData.TargetPoint[0], trajData.TargetPoint[1], trajData.TargetPoint[2]);
+			strcpy(trajData.OwnerImage, trajElement->GetOwner());
+			emit q->getTRAJ(trajData);
+		}
+		return 1;
+	}
+
+	return 0;
+
+}
+
 int VisualBrainLabClientPrivate::ReceiveLabelMeta(igtl::ClientSocket::Pointer& socket, igtl::MessageHeader::Pointer& header)
 {
 	Q_Q(VisualBrainLabClient);
@@ -377,6 +423,7 @@ VisualBrainLabClient::VisualBrainLabClient(QObject* parent)
 	Q_D(VisualBrainLabClient);
 	qRegisterMetaType<IMGMetaData>("IMGMetaData");
 	qRegisterMetaType<LBMetaData>("LBMetaData");
+	qRegisterMetaType<TRAJData>("TRAJData");
     
 	d->m_igtSocket = igtl::ClientSocket::New();
 	d->m_igtQueryInterval = 1000 / d->m_igtQueryFPS;
@@ -469,6 +516,26 @@ void VisualBrainLabClient::QueryMetadata(int id)
 		getPointMsg = igtl::GetPointMessage::New();
 		getPointMsg->Pack();
 		d->m_igtSocket->Send(getPointMsg->GetPackPointer(), getPointMsg->GetPackSize());
+	}
+	else if (id == OpenIGTLinkQueryType::TYPE_TRAJ)
+	{
+		igtl::GetTrajectoryMessage::Pointer getTRAJMsg;
+		getTRAJMsg = igtl::GetTrajectoryMessage::New();
+		getTRAJMsg->Pack();
+		d->m_igtSocket->Send(getTRAJMsg->GetPackPointer(), getTRAJMsg->GetPackSize());
+
+	}
+	else if (id == OpenIGTLinkQueryType::TYPE_CAPABIL)
+	{
+		igtl::CapabilityMessage::Pointer capabilityMsg;
+		capabilityMsg = igtl::CapabilityMessage::New();
+		capabilityMsg->SetDeviceName("Device");
+		capabilityMsg->Pack();
+		d->m_igtSocket->Send(capabilityMsg->GetPackPointer(), capabilityMsg->GetPackSize());
+	}
+	else if (id == OpenIGTLinkQueryType::TYPE_COLOR)
+	{
+		//igtl::GetColor
 	}
 }
 

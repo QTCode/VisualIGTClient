@@ -40,6 +40,9 @@ VisualBrainLabClientWidget::VisualBrainLabClientWidget(QWidget* parent)
 	d->m_TypeButtonGroup.addButton(d->typeImageRBtn, OpenIGTLinkQueryType::TYPE_IMAGE);
 	d->m_TypeButtonGroup.addButton(d->typeLabelRBtn, OpenIGTLinkQueryType::TYPE_LABEL);
 	d->m_TypeButtonGroup.addButton(d->typePointRBtn, OpenIGTLinkQueryType::TYPE_POINT);
+	d->m_TypeButtonGroup.addButton(d->typeLabelRBtn, OpenIGTLinkQueryType::TYPE_CAPABIL);
+	d->m_TypeButtonGroup.addButton(d->typePointRBtn, OpenIGTLinkQueryType::TYPE_COLOR);
+	d->m_TypeButtonGroup.addButton(d->typePointRBtn, OpenIGTLinkQueryType::TYPE_TRAJ);
 
 	QObject::connect(&d->m_TypeButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onQueryTypeChanged(int)));
 	QObject::connect(d->connectBtn, &QPushButton::clicked, this,&VisualBrainLabClientWidget::onConnectToServer);
@@ -48,7 +51,7 @@ VisualBrainLabClientWidget::VisualBrainLabClientWidget(QWidget* parent)
 	d->m_IGTClient = new VisualBrainLabClient();
 	QObject::connect(d->m_IGTClient, &VisualBrainLabClient::signal_log, this, &VisualBrainLabClientWidget::onPrintLog);
 	QObject::connect(d->m_IGTClient, &VisualBrainLabClient::getIMGMeta, this, &VisualBrainLabClientWidget::onUpdateIMGMetaTabWidget);
-	QObject::connect(d->m_IGTClient, &VisualBrainLabClient::getLBMeta, this, &VisualBrainLabClientWidget::onUpdateLBMetatabWidget);
+	QObject::connect(d->m_IGTClient, &VisualBrainLabClient::getLBMeta, this, &VisualBrainLabClientWidget::onUpdateLBMetaTabWidget);
 }
 
 VisualBrainLabClientWidget::~VisualBrainLabClientWidget()
@@ -110,6 +113,10 @@ void VisualBrainLabClientWidget::onQueryTypeChanged(int id)
 			<< QObject::tr("") << QObject::tr("")
 			<< QObject::tr("");
 		break;
+	case OpenIGTLinkQueryType::TYPE_TRAJ:
+		list << QObject::tr("Name") << QObject::tr("Group Name")
+			<< QObject::tr("Type") << QObject::tr("Entry")
+			<< QObject::tr("Target");
 	}
 	d->tableWidget->setColumnCount(list.size());
 	d->tableWidget->setHorizontalHeaderLabels(list);
@@ -166,7 +173,7 @@ void VisualBrainLabClientWidget::onUpdateIMGMetaTabWidget(IMGMetaData metaData)
 	d->tableWidget->setItem(metaData.index, 5, timeItem);
 }
 
-void VisualBrainLabClientWidget::onUpdateLBMetatabWidget(LBMetaData metaData)
+void VisualBrainLabClientWidget::onUpdateLBMetaTabWidget(LBMetaData metaData)
 {
 	Q_D(VisualBrainLabClientWidget);
 	qDebug() << "onUpdateLBMetatabWidget:" << metaData.DeviceName.c_str();
@@ -178,4 +185,30 @@ void VisualBrainLabClientWidget::onUpdateLBMetatabWidget(LBMetaData metaData)
 	d->tableWidget->setItem(metaData.index, 0, deviceItem);
 	d->tableWidget->setItem(metaData.index, 1, nameItem);
 	d->tableWidget->setItem(metaData.index, 2, ownerItem);
+}
+
+void VisualBrainLabClientWidget::onUpdateTRAJDataTabWidget(TRAJData trajData)
+{
+	Q_D(VisualBrainLabClientWidget);
+
+	qDebug() << "onUpdateTRAJDataTabWidget:" << trajData.Name.c_str();
+	d->tableWidget->setRowCount(trajData.index + 1);
+	
+	QTableWidgetItem * nameItem = new QTableWidgetItem(trajData.Name.c_str());
+	QTableWidgetItem* groupNameItem = new QTableWidgetItem(trajData.GroupName.c_str());
+
+	int type = static_cast<int>(trajData.Type);
+	QTableWidgetItem* typeItem = new QTableWidgetItem(QString::number(type));
+
+	QString entry = QString("(%1,%2,%3)").arg(trajData.EntryPoint[0]).arg(trajData.EntryPoint[1]).arg(trajData.EntryPoint[2]);
+	QTableWidgetItem* entryItem = new QTableWidgetItem(entry);
+
+	QString target = QString("(%1,%2,%3)").arg(trajData.TargetPoint[0]).arg(trajData.TargetPoint[1]).arg(trajData.TargetPoint[2]);
+	QTableWidgetItem* targetItem = new QTableWidgetItem(entry);
+
+	d->tableWidget->setItem(trajData.index, 0, nameItem);
+	d->tableWidget->setItem(trajData.index, 1, groupNameItem);
+	d->tableWidget->setItem(trajData.index, 2, typeItem);
+	d->tableWidget->setItem(trajData.index, 3, entryItem);
+	d->tableWidget->setItem(trajData.index, 4, targetItem);
 }

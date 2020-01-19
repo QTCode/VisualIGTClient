@@ -10,6 +10,7 @@
 Q_DECLARE_METATYPE(std::string);
 Q_DECLARE_METATYPE(IMGMetaData);
 Q_DECLARE_METATYPE(LBMetaData);
+Q_DECLARE_METATYPE(TRAJData);
 
 
 enum OpenIGTLinkQueryType
@@ -48,7 +49,7 @@ signals:
 	void signal_log(QString logText);
 	void getIMGMeta(IMGMetaData);
 	void getLBMeta(LBMetaData);
-	void getTRAJ();
+	void getTRAJ(TRAJData);
 protected slots:
 	void onQueryOpenigtLinkServer();
 
