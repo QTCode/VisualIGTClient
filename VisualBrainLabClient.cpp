@@ -34,6 +34,7 @@ protected:
 
 public:
 	VisualBrainLabClientPrivate::VisualBrainLabClientPrivate(VisualBrainLabClient* parent);
+	int SaveImage(igtl::ImageMessage::Pointer& msg, int i);
 	int ReceiveTransform(igtl::Socket * socket, igtl::MessageHeader::Pointer& header);
 	int ReceiveImage(igtl::Socket* socket, igtl::MessageHeader::Pointer& header);
 	int ReceiveTRAJ(igtl::Socket* socket, igtl::MessageHeader::Pointer& header);
@@ -60,12 +61,50 @@ public:
 
 	QTimer* m_igtConnectTimer = nullptr;
 	int m_connectInterval = 5000;		// 5 sec
+	int imageFileId = 0;
 };
 
 VisualBrainLabClientPrivate::VisualBrainLabClientPrivate(VisualBrainLabClient* parent)
 	:q_ptr(parent)
 {
 
+}
+
+//------------------------------------------------------------
+// Function to read test image data
+int VisualBrainLabClientPrivate::SaveImage(igtl::ImageMessage::Pointer& msg, int i)
+{
+	Q_Q(VisualBrainLabClient);
+	//------------------------------------------------------------
+	// Check if image index is in the range
+	if (i < 0 || i >= 100)
+	{
+		std::cerr << "Image index is invalid." << std::endl;
+		return 0;
+	}
+
+	//------------------------------------------------------------
+	// Generate path to the raw image file
+	char filename[128];
+	sprintf(filename, "BrainLabImage%d.dcm", i + 1);
+	std::cerr << "Saving " << filename << "...";
+
+	//------------------------------------------------------------
+	// Load raw data from the file
+	FILE * fp = fopen(filename, "wb");
+	if (fp == NULL)
+	{
+		std::cerr << "File opeining error: " << filename << std::endl;
+		return 0;
+	}
+	int fsize = msg->GetImageSize();
+	size_t b = fwrite(msg->GetScalarPointer(), 1, fsize, fp);
+
+	fclose(fp);
+
+	std::cerr << "done." << std::endl;
+
+	return 1;
 }
 
 int VisualBrainLabClientPrivate::ReceiveTransform(igtl::Socket * socket, igtl::MessageHeader::Pointer& header)
@@ -247,11 +286,10 @@ int VisualBrainLabClientPrivate::ReceiveImage(igtl::Socket* socket, igtl::Messag
 			<< svsize[0] << ", " << svsize[1] << ", " << svsize[2] << ")" << std::endl;
 		std::cerr << "Sub-Volume offset     : ("
 			<< svoffset[0] << ", " << svoffset[1] << ", " << svoffset[2] << ")" << std::endl << std::endl;
+		SaveImage(imgMsg, imageFileId++);
 		return 1;
 	}
-
 	return 0;
-
 }
 
 int VisualBrainLabClientPrivate::ReceiveTRAJ(igtl::Socket* socket, igtl::MessageHeader::Pointer& header)

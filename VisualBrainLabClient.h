@@ -18,9 +18,12 @@ enum OpenIGTLinkQueryType
 	TYPE_IMAGE,
 	TYPE_LABEL,
 	TYPE_POINT,
-	TYPE_COLOR,
+	TYPE_TRAJ,
 	TYPE_CAPABIL,
-	TYPE_TRAJ
+	TYPE_COLOR,
+	TYPE_DEFAULT
+
+
 	//TYPE_GET_IMAGE
 };
 
@@ -46,7 +49,7 @@ public:
 signals:
 	void signal_GetSensor(QString sname, QVariant spose);
 	void signal_QueryOpenIGTLink();
-	void signal_log(QString logText);
+	void logErr(QString logText);
 	void getIMGMeta(IMGMetaData);
 	void getLBMeta(LBMetaData);
 	void getTRAJ(TRAJData);

@@ -48,7 +48,6 @@ VisualBrainLabClientWidget::VisualBrainLabClientWidget(QWidget* parent)
 	d->m_TypeButtonGroup.addButton(d->typeCAPRBtn, OpenIGTLinkQueryType::TYPE_CAPABIL);
 	d->m_TypeButtonGroup.addButton(d->typeColorRBtn, OpenIGTLinkQueryType::TYPE_COLOR);
 
-
 	QObject::connect(&d->m_TypeButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onQueryTypeChanged(int)));
 	QObject::connect(d->connectBtn, &QPushButton::clicked, this,&VisualBrainLabClientWidget::onConnectToServer);
 	QObject::connect(d->updateBtn, &QPushButton::clicked, this, &VisualBrainLabClientWidget::onQueryRemoteList);
@@ -59,6 +58,7 @@ VisualBrainLabClientWidget::VisualBrainLabClientWidget(QWidget* parent)
 	QObject::connect(this, &VisualBrainLabClientWidget::logErr, this, &VisualBrainLabClientWidget::onPrintLog);
 	QObject::connect(d->m_brainLabClient, &VisualBrainLabClient::getIMGMeta, this, &VisualBrainLabClientWidget::onUpdateIMGMetaTabWidget);
 	QObject::connect(d->m_brainLabClient, &VisualBrainLabClient::getLBMeta, this, &VisualBrainLabClientWidget::onUpdateLBMetaTabWidget);
+	QObject::connect(d->m_brainLabClient, &VisualBrainLabClient::getTRAJ, this, &VisualBrainLabClientWidget::onUpdateTRAJDataTabWidget);
 }
 
 VisualBrainLabClientWidget::~VisualBrainLabClientWidget()
@@ -127,6 +127,7 @@ void VisualBrainLabClientWidget::onQueryTypeChanged(int id)
 	}
 	d->tableWidget->setColumnCount(list.size());
 	d->tableWidget->setHorizontalHeaderLabels(list);
+	d->tableWidget->verticalHeader()->hide();//隐藏行号方法 
 	d->tableWidget->setStyleSheet("selection-background-color:lightblue;"); //设置选中背景色
 	//d->tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}"); //设置表头背景色
 	d->tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section{background:#646464;}"); //设置表头背景色
@@ -160,7 +161,6 @@ void VisualBrainLabClientWidget::onGetMetaItem()
 			break;
 		case OpenIGTLinkQueryType::TYPE_TRAJ:
 			break;
-			//d->m_IGTClient->QueryTrackingData();
 		case OpenIGTLinkQueryType::TYPE_CAPABIL:
 			break;
 		default:
