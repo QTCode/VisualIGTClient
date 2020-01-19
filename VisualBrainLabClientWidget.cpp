@@ -1,21 +1,21 @@
-#include "VisualIGTLinkClientWidget.h"
-#include "ui_VisualIGTLinkClientWidget.h"
+#include "VisualBrainLabClientWidget.h"
+#include "ui_VisualBrainLabClientWidget.h"
 #include "VisualBrainLabClient.h"
 
 #include <QButtonGroup>
 #include <QRadioButton>
 #include <QDebug>
 
-class VisualIGTLinkClientWidgetPrivate : public Ui_VisualIGTLinkClientWidget
+class VisualBrainLabClientWidgetPrivate : public Ui_VisualBrainLabClientWidget
 {
-	Q_DECLARE_PUBLIC(VisualIGTLinkClientWidget);
+	Q_DECLARE_PUBLIC(VisualBrainLabClientWidget);
 protected:
-	VisualIGTLinkClientWidget* const q_ptr;
+	VisualBrainLabClientWidget* const q_ptr;
 
 
 public:
 
-	VisualIGTLinkClientWidgetPrivate(VisualIGTLinkClientWidget& object);
+	VisualBrainLabClientWidgetPrivate(VisualBrainLabClientWidget& object);
 	int fps = 20;
 	int    interval = (int)(1000.0 / fps);
 	int m_igtHeadVersion = 1;
@@ -25,16 +25,16 @@ public:
 };
 
 //-----------------------------------------------------------------------
-VisualIGTLinkClientWidgetPrivate::VisualIGTLinkClientWidgetPrivate(VisualIGTLinkClientWidget& object)
+VisualBrainLabClientWidgetPrivate::VisualBrainLabClientWidgetPrivate(VisualBrainLabClientWidget& object)
 	: q_ptr(&object)
 {
 }
 
 //-----------------------------------------------------------------------
-VisualIGTLinkClientWidget::VisualIGTLinkClientWidget(QWidget* parent)
-	: d_ptr(new VisualIGTLinkClientWidgetPrivate(*this))
+VisualBrainLabClientWidget::VisualBrainLabClientWidget(QWidget* parent)
+	: d_ptr(new VisualBrainLabClientWidgetPrivate(*this))
 {
-	Q_D(VisualIGTLinkClientWidget);
+	Q_D(VisualBrainLabClientWidget);
 	d->setupUi(this);
 
 	d->m_TypeButtonGroup.addButton(d->typeImageRBtn, OpenIGTLinkQueryType::TYPE_IMAGE);
@@ -42,18 +42,18 @@ VisualIGTLinkClientWidget::VisualIGTLinkClientWidget(QWidget* parent)
 	d->m_TypeButtonGroup.addButton(d->typePointRBtn, OpenIGTLinkQueryType::TYPE_POINT);
 
 	QObject::connect(&d->m_TypeButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onQueryTypeChanged(int)));
-	QObject::connect(d->connectBtn, &QPushButton::clicked, this,&VisualIGTLinkClientWidget::onConnectToServer);
-	QObject::connect(d->updateBtn, &QPushButton::clicked, this, &VisualIGTLinkClientWidget::onQueryRemoteList);
+	QObject::connect(d->connectBtn, &QPushButton::clicked, this,&VisualBrainLabClientWidget::onConnectToServer);
+	QObject::connect(d->updateBtn, &QPushButton::clicked, this, &VisualBrainLabClientWidget::onQueryRemoteList);
 
 	d->m_IGTClient = new VisualBrainLabClient();
-	QObject::connect(d->m_IGTClient, &VisualBrainLabClient::signal_log, this, &VisualIGTLinkClientWidget::onPrintLog);
-	QObject::connect(d->m_IGTClient, &VisualBrainLabClient::getIMGMeta, this, &VisualIGTLinkClientWidget::onUpdateIMGMetaTabWidget);
-	QObject::connect(d->m_IGTClient, &VisualBrainLabClient::getLBMeta, this, &VisualIGTLinkClientWidget::onUpdateLBMetatabWidget);
+	QObject::connect(d->m_IGTClient, &VisualBrainLabClient::signal_log, this, &VisualBrainLabClientWidget::onPrintLog);
+	QObject::connect(d->m_IGTClient, &VisualBrainLabClient::getIMGMeta, this, &VisualBrainLabClientWidget::onUpdateIMGMetaTabWidget);
+	QObject::connect(d->m_IGTClient, &VisualBrainLabClient::getLBMeta, this, &VisualBrainLabClientWidget::onUpdateLBMetatabWidget);
 }
 
-VisualIGTLinkClientWidget::~VisualIGTLinkClientWidget()
+VisualBrainLabClientWidget::~VisualBrainLabClientWidget()
 {
-	Q_D(VisualIGTLinkClientWidget);
+	Q_D(VisualBrainLabClientWidget);
 	if (nullptr != d->m_IGTClient)
 	{
 		d->m_IGTClient->requestInterruption();
@@ -63,21 +63,21 @@ VisualIGTLinkClientWidget::~VisualIGTLinkClientWidget()
 	}
 }
 
-void VisualIGTLinkClientWidget::onPrintLog(QString logErr)
+void VisualBrainLabClientWidget::onPrintLog(QString logErr)
 {
-	Q_D(VisualIGTLinkClientWidget);
+	Q_D(VisualBrainLabClientWidget);
 	d->logEdit->append(logErr);
 }
 
-void VisualIGTLinkClientWidget::onQueryRemoteList()
+void VisualBrainLabClientWidget::onQueryRemoteList()
 {
-	Q_D(VisualIGTLinkClientWidget);
+	Q_D(VisualBrainLabClientWidget);
 	d->m_IGTClient->QueryMetadata(d->m_TypeButtonGroup.checkedId());
 }
 
-void VisualIGTLinkClientWidget::onConnectToServer()
+void VisualBrainLabClientWidget::onConnectToServer()
 {
-	Q_D(VisualIGTLinkClientWidget);
+	Q_D(VisualBrainLabClientWidget);
 	QString address = d->ipLEdit->text();
 	QString port = d->portLEdit->text();
 
@@ -86,9 +86,9 @@ void VisualIGTLinkClientWidget::onConnectToServer()
 }
 
 //------------------------------------------------------------------------------
-void VisualIGTLinkClientWidget::onQueryTypeChanged(int id)
+void VisualBrainLabClientWidget::onQueryTypeChanged(int id)
 {
-	Q_D(VisualIGTLinkClientWidget);
+	Q_D(VisualBrainLabClientWidget);
 	qDebug() << "onQueryTypeChanged:" << id;
 	d->tableWidget->clearContents();
 	d->tableWidget->setRowCount(0);
@@ -115,9 +115,9 @@ void VisualIGTLinkClientWidget::onQueryTypeChanged(int id)
 	d->tableWidget->setHorizontalHeaderLabels(list);
 }
 
-void VisualIGTLinkClientWidget::onGetMetaItem()
+void VisualBrainLabClientWidget::onGetMetaItem()
 {
-	Q_D(VisualIGTLinkClientWidget);
+	Q_D(VisualBrainLabClientWidget);
 
 	QList<QTableWidgetSelectionRange> selectRange(d->tableWidget->selectedRanges());
 	for (int selectionIndex = 0; selectionIndex < selectRange.size(); selectionIndex++)
@@ -146,9 +146,9 @@ void VisualIGTLinkClientWidget::onGetMetaItem()
 	}
 }
 
-void VisualIGTLinkClientWidget::onUpdateIMGMetaTabWidget(IMGMetaData metaData)
+void VisualBrainLabClientWidget::onUpdateIMGMetaTabWidget(IMGMetaData metaData)
 {
-	Q_D(VisualIGTLinkClientWidget);
+	Q_D(VisualBrainLabClientWidget);
 	d->tableWidget->setRowCount(metaData.index + 1);
 	qDebug() <<"onUpdateIMGMetaTabWidget:"<< metaData.DeviceName.c_str();
 	QTableWidgetItem* deviceItem = new QTableWidgetItem(metaData.DeviceName.c_str());
@@ -166,9 +166,9 @@ void VisualIGTLinkClientWidget::onUpdateIMGMetaTabWidget(IMGMetaData metaData)
 	d->tableWidget->setItem(metaData.index, 5, timeItem);
 }
 
-void VisualIGTLinkClientWidget::onUpdateLBMetatabWidget(LBMetaData metaData)
+void VisualBrainLabClientWidget::onUpdateLBMetatabWidget(LBMetaData metaData)
 {
-	Q_D(VisualIGTLinkClientWidget);
+	Q_D(VisualBrainLabClientWidget);
 	qDebug() << "onUpdateLBMetatabWidget:" << metaData.DeviceName.c_str();
 	d->tableWidget->setRowCount(metaData.index + 1);
 	QTableWidgetItem* deviceItem = new QTableWidgetItem(metaData.DeviceName.c_str());

@@ -34,23 +34,23 @@ link_directories(
 
 set(SRCS
   main.cpp  
-  VisualIGTLinkClientWidget.h
-  VisualIGTLinkClientWidget.cpp
+  VisualBrainLabClientWidget.h
+  VisualBrainLabClientWidget.cpp
 VisualBrainLabClient.h
 VisualBrainLabClient.cpp
 )
 
 set(MOC_SRCS
-  VisualIGTLinkClientWidget.h
+  VisualBrainLabClientWidget.h
   VisualBrainLabClient.h
 )
 
 set(UI_SRCS
-  VisualIGTLinkClientWidget.ui
+  VisualBrainLabClientWidget.ui
 )
 
 set(RCC_SRCS
-  VisualIGTLinkClientWidget.qrc
+  VisualBrainLabClientWidget.qrc
 )
 
 qt5_wrap_cpp(KIT_MOC_CXX ${MOC_SRCS})

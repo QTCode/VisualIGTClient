@@ -1,19 +1,19 @@
 #pragma once
 #include <QWidget>
-#include "ui_VisualIGTLinkClientWidget.h"
+#include "ui_VisualBrainLabClientWidget.h"
 #include "VisualBrainLabClient.h"
 
-class VisualIGTLinkClientWidgetPrivate;
-class VisualIGTLinkClientWidget : public QWidget
+class VisualBrainLabClientWidgetPrivate;
+class VisualBrainLabClientWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	VisualIGTLinkClientWidget(QWidget *parent = Q_NULLPTR);
-	~VisualIGTLinkClientWidget();
+	VisualBrainLabClientWidget(QWidget *parent = Q_NULLPTR);
+	~VisualBrainLabClientWidget();
 
 protected:
-	QScopedPointer<VisualIGTLinkClientWidgetPrivate> d_ptr;
+	QScopedPointer<VisualBrainLabClientWidgetPrivate> d_ptr;
 protected slots:
 	void onConnectToServer();
 	void onPrintLog(QString logErr);
@@ -27,6 +27,6 @@ protected slots:
 
 private:
 
-	Q_DECLARE_PRIVATE(VisualIGTLinkClientWidget);
-	Q_DISABLE_COPY(VisualIGTLinkClientWidget);
+	Q_DECLARE_PRIVATE(VisualBrainLabClientWidget);
+	Q_DISABLE_COPY(VisualBrainLabClientWidget);
 };
