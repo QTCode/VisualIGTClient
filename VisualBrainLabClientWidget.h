@@ -1,7 +1,7 @@
 #pragma once
 #include <QWidget>
 #include "ui_VisualBrainLabClientWidget.h"
-#include "VisualBrainLabClient.h"
+#include "VisualBrainLabType.h"
 
 class VisualBrainLabClientWidgetPrivate;
 class VisualBrainLabClientWidget : public QWidget
