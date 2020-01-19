@@ -19,7 +19,7 @@ public:
 	int fps = 20;
 	int    interval = (int)(1000.0 / fps);
 	int m_igtHeadVersion = 1;
-	VisualBrainLabClient* m_IGTClient = nullptr;
+	VisualBrainLabClient* m_brainLabClient = nullptr;
 	QButtonGroup m_TypeButtonGroup;
 
 };
@@ -48,21 +48,21 @@ VisualBrainLabClientWidget::VisualBrainLabClientWidget(QWidget* parent)
 	QObject::connect(d->connectBtn, &QPushButton::clicked, this,&VisualBrainLabClientWidget::onConnectToServer);
 	QObject::connect(d->updateBtn, &QPushButton::clicked, this, &VisualBrainLabClientWidget::onQueryRemoteList);
 
-	d->m_IGTClient = new VisualBrainLabClient();
-	QObject::connect(d->m_IGTClient, &VisualBrainLabClient::signal_log, this, &VisualBrainLabClientWidget::onPrintLog);
-	QObject::connect(d->m_IGTClient, &VisualBrainLabClient::getIMGMeta, this, &VisualBrainLabClientWidget::onUpdateIMGMetaTabWidget);
-	QObject::connect(d->m_IGTClient, &VisualBrainLabClient::getLBMeta, this, &VisualBrainLabClientWidget::onUpdateLBMetaTabWidget);
+	d->m_brainLabClient = new VisualBrainLabClient();
+	QObject::connect(d->m_brainLabClient, &VisualBrainLabClient::signal_log, this, &VisualBrainLabClientWidget::onPrintLog);
+	QObject::connect(d->m_brainLabClient, &VisualBrainLabClient::getIMGMeta, this, &VisualBrainLabClientWidget::onUpdateIMGMetaTabWidget);
+	QObject::connect(d->m_brainLabClient, &VisualBrainLabClient::getLBMeta, this, &VisualBrainLabClientWidget::onUpdateLBMetaTabWidget);
 }
 
 VisualBrainLabClientWidget::~VisualBrainLabClientWidget()
 {
 	Q_D(VisualBrainLabClientWidget);
-	if (nullptr != d->m_IGTClient)
+	if (nullptr != d->m_brainLabClient)
 	{
-		d->m_IGTClient->requestInterruption();
-		d->m_IGTClient->quit();
-		d->m_IGTClient->wait();
-		d->m_IGTClient->deleteLater();
+		d->m_brainLabClient->requestInterruption();
+		d->m_brainLabClient->quit();
+		d->m_brainLabClient->wait();
+		d->m_brainLabClient->deleteLater();
 	}
 }
 
@@ -75,7 +75,7 @@ void VisualBrainLabClientWidget::onPrintLog(QString logErr)
 void VisualBrainLabClientWidget::onQueryRemoteList()
 {
 	Q_D(VisualBrainLabClientWidget);
-	d->m_IGTClient->QueryMetadata(d->m_TypeButtonGroup.checkedId());
+	d->m_brainLabClient->QueryMetadata(d->m_TypeButtonGroup.checkedId());
 }
 
 void VisualBrainLabClientWidget::onConnectToServer()
@@ -84,8 +84,8 @@ void VisualBrainLabClientWidget::onConnectToServer()
 	QString address = d->ipLEdit->text();
 	QString port = d->portLEdit->text();
 
-	d->m_IGTClient->SetDeviceAddress(address.toStdString().c_str(), port.toInt());
-	d->m_IGTClient->start();
+	d->m_brainLabClient->SetDeviceAddress(address.toStdString().c_str(), port.toInt());
+	d->m_brainLabClient->start();
 }
 
 //------------------------------------------------------------------------------
@@ -142,10 +142,15 @@ void VisualBrainLabClientWidget::onGetMetaItem()
 		{
 		case OpenIGTLinkQueryType::TYPE_IMAGE:
 		case OpenIGTLinkQueryType::TYPE_LABEL:
-			d->m_IGTClient->QueryImage(dataId);
+			d->m_brainLabClient->QueryImage(dataId);
 			break;
 		case OpenIGTLinkQueryType::TYPE_POINT:
 			//this->getPointList(dataId);
+			break;
+		case OpenIGTLinkQueryType::TYPE_TRAJ:
+			break;
+			//d->m_IGTClient->QueryTrackingData();
+		case OpenIGTLinkQueryType::TYPE_CAPABIL:
 			break;
 		default:
 			qCritical() << Q_FUNC_INFO << " failed: unknown item type selected";
