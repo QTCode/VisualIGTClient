@@ -1,27 +1,10 @@
 ﻿#pragma once
+#include "VisualBrainLabType.h"
+
 #include <QObject>
 #include <QThread>
 #include <QVariant>
 #include <QMetaType>
-
-typedef struct IMGMetaData
-{
-	int index;
-	std::string DeviceName;
-	std::string Name;
-	std::string PatientID;
-	std::string PatientName;
-	std::string Modality;
-	std::string Timess;
-}IMGMetaData;
-
-typedef struct LBMetaData
-{
-	int index;
-	std::string DeviceName;
-	std::string Name;
-	std::string Owner;
-}LBMetaData;
 
 
 Q_DECLARE_METATYPE(std::string);
@@ -34,6 +17,9 @@ enum OpenIGTLinkQueryType
 	TYPE_IMAGE,
 	TYPE_LABEL,
 	TYPE_POINT,
+	TYPE_COLOR,
+	TYPE_CAPABIL,
+	TYPE_TRAJ
 	//TYPE_GET_IMAGE
 };
 
@@ -62,6 +48,7 @@ signals:
 	void signal_log(QString logText);
 	void getIMGMeta(IMGMetaData);
 	void getLBMeta(LBMetaData);
+	void getTRAJ();
 protected slots:
 	void onQueryOpenigtLinkServer();
 

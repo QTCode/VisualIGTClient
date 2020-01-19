@@ -34,6 +34,7 @@ link_directories(
 
 set(SRCS
   main.cpp  
+  VisualBrainLabType.h
   VisualBrainLabClientWidget.h
   VisualBrainLabClientWidget.cpp
 VisualBrainLabClient.h
