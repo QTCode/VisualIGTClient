@@ -446,32 +446,32 @@ void VisualBrainLabClient::SetDeviceAddress(QString address /*= QString("127.0.0
 void VisualBrainLabClient::QueryTrackingData()
 {
 	Q_D(VisualBrainLabClient);
-	emit signal_log("start QueryTrackData");
+	emit logErr("start QueryTrackData");
 	// Send request data
 	igtl::StartTrackingDataMessage::Pointer startTrackingDataMsg;
 	startTrackingDataMsg = igtl::StartTrackingDataMessage::New();
 	startTrackingDataMsg->SetDeviceName("");
 	d->m_igtSocket->Send(startTrackingDataMsg->GetPackPointer(), startTrackingDataMsg->GetPackSize());
-	emit signal_log(QString::fromStdString(startTrackingDataMsg->GetDeviceType()));
+	emit logErr(QString::fromStdString(startTrackingDataMsg->GetDeviceType()));
 
 }
 
 void VisualBrainLabClient::StopQueryTrackData()
 {
 	Q_D(VisualBrainLabClient);
-	emit signal_log("StopQueryTrackData");
+	emit logErr("StopQueryTrackData");
 	// Send request data
 	igtl::StopTrackingDataMessage::Pointer stopTrackingDataMsg;
 	stopTrackingDataMsg = igtl::StopTrackingDataMessage::New();
 	stopTrackingDataMsg->SetDeviceName("");
 	d->m_igtSocket->Send(stopTrackingDataMsg->GetPackPointer(), stopTrackingDataMsg->GetPackSize());
-	emit signal_log(QString::fromStdString(stopTrackingDataMsg->GetDeviceType()));
+	emit logErr(QString::fromStdString(stopTrackingDataMsg->GetDeviceType()));
 }
 
 void VisualBrainLabClient::QueryImages()
 {
 	Q_D(VisualBrainLabClient);
-	emit signal_log("QueryImages");
+	emit logErr("QueryImages");
 	igtl::ImageMessage::Pointer imageMsg;
 	imageMsg = igtl::ImageMessage::New();
 	imageMsg->SetDeviceName("");
@@ -481,7 +481,7 @@ void VisualBrainLabClient::QueryImages()
 void VisualBrainLabClient::QueryImage(std::string imageID)
 {
 	Q_D(VisualBrainLabClient);
-	emit signal_log("QueryImage");
+	emit logErr("QueryImage");
 	igtl::GetImageMessage::Pointer getImageMsg;
 	getImageMsg = igtl::GetImageMessage::New();
 	getImageMsg->SetDeviceName(imageID);
@@ -493,7 +493,7 @@ void VisualBrainLabClient::QueryMetadata(int id)
 	Q_D(VisualBrainLabClient);
 	if (id == OpenIGTLinkQueryType::TYPE_IMAGE)
 	{
-		emit signal_log("QueryImageMate");
+		emit logErr("QueryImageMate");
 		// Send request data
 		igtl::GetImageMetaMessage::Pointer getImageMetaMsg;
 		getImageMetaMsg = igtl::GetImageMetaMessage::New();
@@ -644,11 +644,11 @@ int VisualBrainLabClient::ConnectDevice()
 	d->m_igtSocketResult = d->m_igtSocket->ConnectToServer(d->m_serverAddress.toLocal8Bit(), d->m_serverPort);
 	if (d->m_igtSocketResult != 0)
 	{
-		emit signal_log(QString("Can't Connect To Device Server! Wait for ") + QString::number(d->m_connectInterval / 1000) + QString("s"));
+		emit logErr(QString("Can't Connect To Device Server! Wait for ") + QString::number(d->m_connectInterval / 1000) + QString("s"));
 	}
 	else
 	{
-		emit signal_log(QString("Connection to the server was successful"));
+		emit logErr(QString("Connection to the server was successful"));
 	}
 	return d->m_igtSocketResult;
 }
@@ -707,6 +707,14 @@ void VisualBrainLabClient::QueryDevice()
 		else if (strcmp(headerMsg->GetDeviceType(), "POINT") == 0)
 		{
 			d->ReceivePoint(d->m_igtSocket, headerMsg);
+		}
+		else if (strcmp(headerMsg->GetDeviceType(), "CAPABIL") == 0)
+		{
+
+		}
+		else if (strcmp(headerMsg->GetDeviceType(), "TRAJ") == 0)
+		{
+			d->ReceiveTRAJ(d->m_igtSocket, headerMsg);
 		}
 		else
 		{

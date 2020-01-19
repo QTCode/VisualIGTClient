@@ -6,12 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>595</width>
-    <height>626</height>
+    <width>717</width>
+    <height>834</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>IGTLinkClinet</string>
+   <string>BrainLabClient</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(100, 100, 100);
+font: 8pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(255, 255, 255);</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -114,6 +119,34 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QRadioButton" name="typeTRAJRBtn">
+       <property name="text">
+        <string>TRAJ</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="typeCAPRBtn">
+       <property name="text">
+        <string>CAPABIL</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="typeColorRBtn">
+       <property name="text">
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="typePointRBtn_4">
+       <property name="text">
+        <string>保留</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -124,7 +157,13 @@
     </widget>
    </item>
    <item>
-    <widget class="QTableWidget" name="tableWidget"/>
+    <widget class="QTableWidget" name="tableWidget">
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(100, 100, 100);
+selection-color: rgb(100, 100, 100);
+color: rgb(255, 255, 255);</string>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QPushButton" name="getSelectedItemBtn">

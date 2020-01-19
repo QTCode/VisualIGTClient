@@ -11,7 +11,8 @@ class VisualBrainLabClientWidget : public QWidget
 public:
 	VisualBrainLabClientWidget(QWidget *parent = Q_NULLPTR);
 	~VisualBrainLabClientWidget();
-
+signals:
+	void logErr(QString log);
 protected:
 	QScopedPointer<VisualBrainLabClientWidgetPrivate> d_ptr;
 protected slots:

@@ -36,20 +36,27 @@ VisualBrainLabClientWidget::VisualBrainLabClientWidget(QWidget* parent)
 {
 	Q_D(VisualBrainLabClientWidget);
 	d->setupUi(this);
-
+	setStyleSheet("venus--TitleBar {background-color: rgb(0,0,0);color: rgb(255,255,255);}");
+	//this->setStyleSheet()
+	//this->setWindowOpacity(1);
+	//this->setWindowFlags(Qt::FramelessWindowHint);
+	//this->setAttribute(Qt::WA_TranslucentBackground);
 	d->m_TypeButtonGroup.addButton(d->typeImageRBtn, OpenIGTLinkQueryType::TYPE_IMAGE);
 	d->m_TypeButtonGroup.addButton(d->typeLabelRBtn, OpenIGTLinkQueryType::TYPE_LABEL);
 	d->m_TypeButtonGroup.addButton(d->typePointRBtn, OpenIGTLinkQueryType::TYPE_POINT);
-	d->m_TypeButtonGroup.addButton(d->typeLabelRBtn, OpenIGTLinkQueryType::TYPE_CAPABIL);
-	d->m_TypeButtonGroup.addButton(d->typePointRBtn, OpenIGTLinkQueryType::TYPE_COLOR);
-	d->m_TypeButtonGroup.addButton(d->typePointRBtn, OpenIGTLinkQueryType::TYPE_TRAJ);
+	d->m_TypeButtonGroup.addButton(d->typeTRAJRBtn, OpenIGTLinkQueryType::TYPE_TRAJ);
+	d->m_TypeButtonGroup.addButton(d->typeCAPRBtn, OpenIGTLinkQueryType::TYPE_CAPABIL);
+	d->m_TypeButtonGroup.addButton(d->typeColorRBtn, OpenIGTLinkQueryType::TYPE_COLOR);
+
 
 	QObject::connect(&d->m_TypeButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onQueryTypeChanged(int)));
 	QObject::connect(d->connectBtn, &QPushButton::clicked, this,&VisualBrainLabClientWidget::onConnectToServer);
 	QObject::connect(d->updateBtn, &QPushButton::clicked, this, &VisualBrainLabClientWidget::onQueryRemoteList);
+	QObject::connect(d->getSelectedItemBtn, &QPushButton::clicked, this, &VisualBrainLabClientWidget::onGetMetaItem);
 
 	d->m_brainLabClient = new VisualBrainLabClient();
-	QObject::connect(d->m_brainLabClient, &VisualBrainLabClient::signal_log, this, &VisualBrainLabClientWidget::onPrintLog);
+	QObject::connect(d->m_brainLabClient, &VisualBrainLabClient::logErr, this, &VisualBrainLabClientWidget::onPrintLog);
+	QObject::connect(this, &VisualBrainLabClientWidget::logErr, this, &VisualBrainLabClientWidget::onPrintLog);
 	QObject::connect(d->m_brainLabClient, &VisualBrainLabClient::getIMGMeta, this, &VisualBrainLabClientWidget::onUpdateIMGMetaTabWidget);
 	QObject::connect(d->m_brainLabClient, &VisualBrainLabClient::getLBMeta, this, &VisualBrainLabClientWidget::onUpdateLBMetaTabWidget);
 }
@@ -120,6 +127,9 @@ void VisualBrainLabClientWidget::onQueryTypeChanged(int id)
 	}
 	d->tableWidget->setColumnCount(list.size());
 	d->tableWidget->setHorizontalHeaderLabels(list);
+	d->tableWidget->setStyleSheet("selection-background-color:lightblue;"); //设置选中背景色
+	//d->tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section{background:skyblue;}"); //设置表头背景色
+	d->tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section{background:#646464;}"); //设置表头背景色
 }
 
 void VisualBrainLabClientWidget::onGetMetaItem()
@@ -138,6 +148,7 @@ void VisualBrainLabClientWidget::onGetMetaItem()
 			continue;
 		}
 		std::string dataId(selectedItem->text().toLatin1());
+		emit logErr(QString::fromStdString(dataId));
 		switch (d->m_TypeButtonGroup.checkedId())
 		{
 		case OpenIGTLinkQueryType::TYPE_IMAGE:
