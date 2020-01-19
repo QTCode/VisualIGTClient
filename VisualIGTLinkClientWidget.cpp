@@ -1,21 +1,21 @@
-#include "IGTLinkClientWidget.h"
-#include "ui_IGTLinkClientWidget.h"
+#include "VisualIGTLinkClientWidget.h"
+#include "ui_VisualIGTLinkClientWidget.h"
 #include "VisualOpenIGTLinkClient.h"
 
 #include <QButtonGroup>
 #include <QRadioButton>
 #include <QDebug>
 
-class IGTLinkClientWidgetPrivate : public Ui_IGTLinkClientWidget
+class VisualIGTLinkClientWidgetPrivate : public Ui_VisualIGTLinkClientWidget
 {
-	Q_DECLARE_PUBLIC(IGTLinkClientWidget);
+	Q_DECLARE_PUBLIC(VisualIGTLinkClientWidget);
 protected:
-	IGTLinkClientWidget* const q_ptr;
+	VisualIGTLinkClientWidget* const q_ptr;
 
 
 public:
 
-	IGTLinkClientWidgetPrivate(IGTLinkClientWidget& object);
+	VisualIGTLinkClientWidgetPrivate(VisualIGTLinkClientWidget& object);
 	int fps = 20;
 	int    interval = (int)(1000.0 / fps);
 	int m_igtHeadVersion = 1;
@@ -25,16 +25,16 @@ public:
 };
 
 //-----------------------------------------------------------------------
-IGTLinkClientWidgetPrivate::IGTLinkClientWidgetPrivate(IGTLinkClientWidget& object)
+VisualIGTLinkClientWidgetPrivate::VisualIGTLinkClientWidgetPrivate(VisualIGTLinkClientWidget& object)
 	: q_ptr(&object)
 {
 }
 
 //-----------------------------------------------------------------------
-IGTLinkClientWidget::IGTLinkClientWidget(QWidget* parent)
-	: d_ptr(new IGTLinkClientWidgetPrivate(*this))
+VisualIGTLinkClientWidget::VisualIGTLinkClientWidget(QWidget* parent)
+	: d_ptr(new VisualIGTLinkClientWidgetPrivate(*this))
 {
-	Q_D(IGTLinkClientWidget);
+	Q_D(VisualIGTLinkClientWidget);
 	d->setupUi(this);
 
 	d->m_TypeButtonGroup.addButton(d->typeImageRBtn, OpenIGTLinkQueryType::TYPE_IMAGE);
@@ -42,18 +42,18 @@ IGTLinkClientWidget::IGTLinkClientWidget(QWidget* parent)
 	d->m_TypeButtonGroup.addButton(d->typePointRBtn, OpenIGTLinkQueryType::TYPE_POINT);
 
 	QObject::connect(&d->m_TypeButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onQueryTypeChanged(int)));
-	QObject::connect(d->connectBtn, &QPushButton::clicked, this,&IGTLinkClientWidget::onConnectToServer);
-	QObject::connect(d->updateBtn, &QPushButton::clicked, this, &IGTLinkClientWidget::onQueryRemoteList);
+	QObject::connect(d->connectBtn, &QPushButton::clicked, this,&VisualIGTLinkClientWidget::onConnectToServer);
+	QObject::connect(d->updateBtn, &QPushButton::clicked, this, &VisualIGTLinkClientWidget::onQueryRemoteList);
 
 	d->m_IGTClient = new VisualOpenIGTLinkClient();
-	QObject::connect(d->m_IGTClient, &VisualOpenIGTLinkClient::signal_log, this, &IGTLinkClientWidget::onPrintLog);
-	QObject::connect(d->m_IGTClient, &VisualOpenIGTLinkClient::getIMGMeta, this, &IGTLinkClientWidget::onUpdateIMGMetaTabWidget);
-	QObject::connect(d->m_IGTClient, &VisualOpenIGTLinkClient::getLBMeta, this, &IGTLinkClientWidget::onUpdateLBMetatabWidget);
+	QObject::connect(d->m_IGTClient, &VisualOpenIGTLinkClient::signal_log, this, &VisualIGTLinkClientWidget::onPrintLog);
+	QObject::connect(d->m_IGTClient, &VisualOpenIGTLinkClient::getIMGMeta, this, &VisualIGTLinkClientWidget::onUpdateIMGMetaTabWidget);
+	QObject::connect(d->m_IGTClient, &VisualOpenIGTLinkClient::getLBMeta, this, &VisualIGTLinkClientWidget::onUpdateLBMetatabWidget);
 }
 
-IGTLinkClientWidget::~IGTLinkClientWidget()
+VisualIGTLinkClientWidget::~VisualIGTLinkClientWidget()
 {
-	Q_D(IGTLinkClientWidget);
+	Q_D(VisualIGTLinkClientWidget);
 	if (nullptr != d->m_IGTClient)
 	{
 		d->m_IGTClient->requestInterruption();
@@ -63,21 +63,21 @@ IGTLinkClientWidget::~IGTLinkClientWidget()
 	}
 }
 
-void IGTLinkClientWidget::onPrintLog(QString logErr)
+void VisualIGTLinkClientWidget::onPrintLog(QString logErr)
 {
-	Q_D(IGTLinkClientWidget);
+	Q_D(VisualIGTLinkClientWidget);
 	d->logEdit->append(logErr);
 }
 
-void IGTLinkClientWidget::onQueryRemoteList()
+void VisualIGTLinkClientWidget::onQueryRemoteList()
 {
-	Q_D(IGTLinkClientWidget);
+	Q_D(VisualIGTLinkClientWidget);
 	d->m_IGTClient->QueryMetadata(d->m_TypeButtonGroup.checkedId());
 }
 
-void IGTLinkClientWidget::onConnectToServer()
+void VisualIGTLinkClientWidget::onConnectToServer()
 {
-	Q_D(IGTLinkClientWidget);
+	Q_D(VisualIGTLinkClientWidget);
 	QString address = d->ipLEdit->text();
 	QString port = d->portLEdit->text();
 
@@ -86,9 +86,9 @@ void IGTLinkClientWidget::onConnectToServer()
 }
 
 //------------------------------------------------------------------------------
-void IGTLinkClientWidget::onQueryTypeChanged(int id)
+void VisualIGTLinkClientWidget::onQueryTypeChanged(int id)
 {
-	Q_D(IGTLinkClientWidget);
+	Q_D(VisualIGTLinkClientWidget);
 	qDebug() << "onQueryTypeChanged:" << id;
 	d->tableWidget->clearContents();
 	d->tableWidget->setRowCount(0);
@@ -115,9 +115,9 @@ void IGTLinkClientWidget::onQueryTypeChanged(int id)
 	d->tableWidget->setHorizontalHeaderLabels(list);
 }
 
-void IGTLinkClientWidget::onGetMetaItem()
+void VisualIGTLinkClientWidget::onGetMetaItem()
 {
-	Q_D(IGTLinkClientWidget);
+	Q_D(VisualIGTLinkClientWidget);
 
 	QList<QTableWidgetSelectionRange> selectRange(d->tableWidget->selectedRanges());
 	for (int selectionIndex = 0; selectionIndex < selectRange.size(); selectionIndex++)
@@ -146,9 +146,9 @@ void IGTLinkClientWidget::onGetMetaItem()
 	}
 }
 
-void IGTLinkClientWidget::onUpdateIMGMetaTabWidget(IMGMetaData metaData)
+void VisualIGTLinkClientWidget::onUpdateIMGMetaTabWidget(IMGMetaData metaData)
 {
-	Q_D(IGTLinkClientWidget);
+	Q_D(VisualIGTLinkClientWidget);
 	d->tableWidget->setRowCount(metaData.index + 1);
 	qDebug() <<"onUpdateIMGMetaTabWidget:"<< metaData.DeviceName.c_str();
 	QTableWidgetItem* deviceItem = new QTableWidgetItem(metaData.DeviceName.c_str());
@@ -166,9 +166,9 @@ void IGTLinkClientWidget::onUpdateIMGMetaTabWidget(IMGMetaData metaData)
 	d->tableWidget->setItem(metaData.index, 5, timeItem);
 }
 
-void IGTLinkClientWidget::onUpdateLBMetatabWidget(LBMetaData metaData)
+void VisualIGTLinkClientWidget::onUpdateLBMetatabWidget(LBMetaData metaData)
 {
-	Q_D(IGTLinkClientWidget);
+	Q_D(VisualIGTLinkClientWidget);
 	qDebug() << "onUpdateLBMetatabWidget:" << metaData.DeviceName.c_str();
 	d->tableWidget->setRowCount(metaData.index + 1);
 	QTableWidgetItem* deviceItem = new QTableWidgetItem(metaData.DeviceName.c_str());

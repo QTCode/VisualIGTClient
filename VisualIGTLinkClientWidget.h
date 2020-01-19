@@ -1,19 +1,19 @@
 #pragma once
 #include <QWidget>
-#include "ui_IGTLinkClientWidget.h"
+#include "ui_VisualIGTLinkClientWidget.h"
 #include "VisualOpenIGTLinkClient.h"
 
-class IGTLinkClientWidgetPrivate;
-class IGTLinkClientWidget : public QWidget
+class VisualIGTLinkClientWidgetPrivate;
+class VisualIGTLinkClientWidget : public QWidget
 {
 	Q_OBJECT
 
 public:
-	IGTLinkClientWidget(QWidget *parent = Q_NULLPTR);
-	~IGTLinkClientWidget();
+	VisualIGTLinkClientWidget(QWidget *parent = Q_NULLPTR);
+	~VisualIGTLinkClientWidget();
 
 protected:
-	QScopedPointer<IGTLinkClientWidgetPrivate> d_ptr;
+	QScopedPointer<VisualIGTLinkClientWidgetPrivate> d_ptr;
 protected slots:
 	void onConnectToServer();
 	void onPrintLog(QString logErr);
@@ -27,6 +27,6 @@ protected slots:
 
 private:
 
-	Q_DECLARE_PRIVATE(IGTLinkClientWidget);
-	Q_DISABLE_COPY(IGTLinkClientWidget);
+	Q_DECLARE_PRIVATE(VisualIGTLinkClientWidget);
+	Q_DISABLE_COPY(VisualIGTLinkClientWidget);
 };

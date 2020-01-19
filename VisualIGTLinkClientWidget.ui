@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>IGTLinkClientWidget</class>
- <widget class="QWidget" name="IGTLinkClientWidget">
+ <class>VisualIGTLinkClientWidget</class>
+ <widget class="QWidget" name="VisualIGTLinkClientWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

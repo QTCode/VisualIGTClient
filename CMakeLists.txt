@@ -34,23 +34,23 @@ link_directories(
 
 set(SRCS
   main.cpp  
-  IGTLinkClientWidget.h
-  IGTLinkClientWidget.cpp
+  VisualIGTLinkClientWidget.h
+  VisualIGTLinkClientWidget.cpp
 VisualOpenIGTLinkClient.h
 VisualOpenIGTLinkClient.cpp
 )
 
 set(MOC_SRCS
-  IGTLinkClientWidget.h
-VisualOpenIGTLinkClient.h
+  VisualIGTLinkClientWidget.h
+  VisualOpenIGTLinkClient.h
 )
 
 set(UI_SRCS
-  IGTLinkClientWidget.ui
+  VisualIGTLinkClientWidget.ui
 )
 
 set(RCC_SRCS
-  IGTLinkClientWidget.qrc
+  VisualIGTLinkClientWidget.qrc
 )
 
 qt5_wrap_cpp(KIT_MOC_CXX ${MOC_SRCS})
