@@ -37,13 +37,13 @@ enum OpenIGTLinkQueryType
 	//TYPE_GET_IMAGE
 };
 
-class VisualOpenIGTLinkClientPrivate;
-class  VisualOpenIGTLinkClient : public QThread
+class VisualBrainLabClientPrivate;
+class  VisualBrainLabClient : public QThread
 {
     Q_OBJECT
 public:
-	VisualOpenIGTLinkClient(QObject* parent = Q_NULLPTR);
-	~VisualOpenIGTLinkClient();
+	VisualBrainLabClient(QObject* parent = Q_NULLPTR);
+	~VisualBrainLabClient();
 
 	void SetDeviceAddress(QString address = QString("127.0.0.1"), int port = 18944);
 
@@ -66,7 +66,7 @@ protected slots:
 	void onQueryOpenigtLinkServer();
 
 protected:
-	QScopedPointer<VisualOpenIGTLinkClientPrivate> d_ptr;
+	QScopedPointer<VisualBrainLabClientPrivate> d_ptr;
 	void run();
 	int ConnectDevice();
 	void QueryDevice();
@@ -74,6 +74,6 @@ protected:
 
 
 private:
-	Q_DECLARE_PRIVATE(VisualOpenIGTLinkClient);
-	Q_DISABLE_COPY(VisualOpenIGTLinkClient);
+	Q_DECLARE_PRIVATE(VisualBrainLabClient);
+	Q_DISABLE_COPY(VisualBrainLabClient);
 };

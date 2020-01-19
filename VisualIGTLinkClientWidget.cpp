@@ -1,6 +1,6 @@
 #include "VisualIGTLinkClientWidget.h"
 #include "ui_VisualIGTLinkClientWidget.h"
-#include "VisualOpenIGTLinkClient.h"
+#include "VisualBrainLabClient.h"
 
 #include <QButtonGroup>
 #include <QRadioButton>
@@ -19,7 +19,7 @@ public:
 	int fps = 20;
 	int    interval = (int)(1000.0 / fps);
 	int m_igtHeadVersion = 1;
-	VisualOpenIGTLinkClient* m_IGTClient = nullptr;
+	VisualBrainLabClient* m_IGTClient = nullptr;
 	QButtonGroup m_TypeButtonGroup;
 
 };
@@ -45,10 +45,10 @@ VisualIGTLinkClientWidget::VisualIGTLinkClientWidget(QWidget* parent)
 	QObject::connect(d->connectBtn, &QPushButton::clicked, this,&VisualIGTLinkClientWidget::onConnectToServer);
 	QObject::connect(d->updateBtn, &QPushButton::clicked, this, &VisualIGTLinkClientWidget::onQueryRemoteList);
 
-	d->m_IGTClient = new VisualOpenIGTLinkClient();
-	QObject::connect(d->m_IGTClient, &VisualOpenIGTLinkClient::signal_log, this, &VisualIGTLinkClientWidget::onPrintLog);
-	QObject::connect(d->m_IGTClient, &VisualOpenIGTLinkClient::getIMGMeta, this, &VisualIGTLinkClientWidget::onUpdateIMGMetaTabWidget);
-	QObject::connect(d->m_IGTClient, &VisualOpenIGTLinkClient::getLBMeta, this, &VisualIGTLinkClientWidget::onUpdateLBMetatabWidget);
+	d->m_IGTClient = new VisualBrainLabClient();
+	QObject::connect(d->m_IGTClient, &VisualBrainLabClient::signal_log, this, &VisualIGTLinkClientWidget::onPrintLog);
+	QObject::connect(d->m_IGTClient, &VisualBrainLabClient::getIMGMeta, this, &VisualIGTLinkClientWidget::onUpdateIMGMetaTabWidget);
+	QObject::connect(d->m_IGTClient, &VisualBrainLabClient::getLBMeta, this, &VisualIGTLinkClientWidget::onUpdateLBMetatabWidget);
 }
 
 VisualIGTLinkClientWidget::~VisualIGTLinkClientWidget()

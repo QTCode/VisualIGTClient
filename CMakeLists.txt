@@ -36,13 +36,13 @@ set(SRCS
   main.cpp  
   VisualIGTLinkClientWidget.h
   VisualIGTLinkClientWidget.cpp
-VisualOpenIGTLinkClient.h
-VisualOpenIGTLinkClient.cpp
+VisualBrainLabClient.h
+VisualBrainLabClient.cpp
 )
 
 set(MOC_SRCS
   VisualIGTLinkClientWidget.h
-  VisualOpenIGTLinkClient.h
+  VisualBrainLabClient.h
 )
 
 set(UI_SRCS

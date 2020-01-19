@@ -1,4 +1,4 @@
-﻿#include "VisualOpenIGTLinkClient.h"
+﻿#include "VisualBrainLabClient.h"
 
 #include "nlohmann/json.hpp"
 
@@ -26,14 +26,14 @@
 #include "igtlCapabilityMessage.h"
 #endif // OpenIGTLink_PROTOCOL_VERSION >= 2
 
-class VisualOpenIGTLinkClientPrivate
+class VisualBrainLabClientPrivate
 {
-	Q_DECLARE_PUBLIC(VisualOpenIGTLinkClient);
+	Q_DECLARE_PUBLIC(VisualBrainLabClient);
 protected:
-	VisualOpenIGTLinkClient* const q_ptr;
+	VisualBrainLabClient* const q_ptr;
 
 public:
-	VisualOpenIGTLinkClientPrivate::VisualOpenIGTLinkClientPrivate(VisualOpenIGTLinkClient* parent);
+	VisualBrainLabClientPrivate::VisualBrainLabClientPrivate(VisualBrainLabClient* parent);
 	int ReceiveTransform(igtl::Socket * socket, igtl::MessageHeader::Pointer& header);
 	int ReceiveImage(igtl::Socket* socket, igtl::MessageHeader::Pointer& header);
 	int ReceiveLabelMeta(igtl::ClientSocket::Pointer& socket, igtl::MessageHeader::Pointer& header);
@@ -61,15 +61,15 @@ public:
 	int m_connectInterval = 5000;		// 5 sec
 };
 
-VisualOpenIGTLinkClientPrivate::VisualOpenIGTLinkClientPrivate(VisualOpenIGTLinkClient* parent)
+VisualBrainLabClientPrivate::VisualBrainLabClientPrivate(VisualBrainLabClient* parent)
 	:q_ptr(parent)
 {
 
 }
 
-int VisualOpenIGTLinkClientPrivate::ReceiveTransform(igtl::Socket * socket, igtl::MessageHeader::Pointer& header)
+int VisualBrainLabClientPrivate::ReceiveTransform(igtl::Socket * socket, igtl::MessageHeader::Pointer& header)
 {
-	Q_Q(VisualOpenIGTLinkClient);
+	Q_Q(VisualBrainLabClient);
 
 	// Create a message buffer to receive transform data
 	igtl::TransformMessage::Pointer transMsg;
@@ -111,9 +111,9 @@ int VisualOpenIGTLinkClientPrivate::ReceiveTransform(igtl::Socket * socket, igtl
 	return 0;
 }
 
-int VisualOpenIGTLinkClientPrivate::ReceiveTrackingData(igtl::ClientSocket::Pointer& socket, igtl::MessageHeader::Pointer& header)
+int VisualBrainLabClientPrivate::ReceiveTrackingData(igtl::ClientSocket::Pointer& socket, igtl::MessageHeader::Pointer& header)
 {
-	Q_Q(VisualOpenIGTLinkClient);
+	Q_Q(VisualBrainLabClient);
 	std::cerr << "Receiving TDATA data type." << std::endl;
 
 	// Create a message buffer to receive transform data
@@ -153,9 +153,9 @@ int VisualOpenIGTLinkClientPrivate::ReceiveTrackingData(igtl::ClientSocket::Poin
 	return 0;
 }
 
-int VisualOpenIGTLinkClientPrivate::ReceivePoint(igtl::Socket* socket, igtl::MessageHeader::Pointer& header)
+int VisualBrainLabClientPrivate::ReceivePoint(igtl::Socket* socket, igtl::MessageHeader::Pointer& header)
 {
-	Q_Q(VisualOpenIGTLinkClient);
+	Q_Q(VisualBrainLabClient);
 	std::cerr << "Receiving POINT data type." << std::endl;
 
 	// Create a message buffer to receive transform data
@@ -199,9 +199,9 @@ int VisualOpenIGTLinkClientPrivate::ReceivePoint(igtl::Socket* socket, igtl::Mes
 	return 1;
 }
 
-int VisualOpenIGTLinkClientPrivate::ReceiveImage(igtl::Socket* socket, igtl::MessageHeader::Pointer& header)
+int VisualBrainLabClientPrivate::ReceiveImage(igtl::Socket* socket, igtl::MessageHeader::Pointer& header)
 {
-	Q_Q(VisualOpenIGTLinkClient);
+	Q_Q(VisualBrainLabClient);
 
 	std::cerr << "Receiving IMAGE data type." << std::endl;
 
@@ -253,9 +253,9 @@ int VisualOpenIGTLinkClientPrivate::ReceiveImage(igtl::Socket* socket, igtl::Mes
 
 }
 
-int VisualOpenIGTLinkClientPrivate::ReceiveLabelMeta(igtl::ClientSocket::Pointer& socket, igtl::MessageHeader::Pointer& header)
+int VisualBrainLabClientPrivate::ReceiveLabelMeta(igtl::ClientSocket::Pointer& socket, igtl::MessageHeader::Pointer& header)
 {
-	Q_Q(VisualOpenIGTLinkClient);
+	Q_Q(VisualBrainLabClient);
 	std::cerr << "Receiving LBMETA data type." << std::endl;
 
 	// Create a message buffer to receive transform data
@@ -308,9 +308,9 @@ int VisualOpenIGTLinkClientPrivate::ReceiveLabelMeta(igtl::ClientSocket::Pointer
 
 }
 
-int VisualOpenIGTLinkClientPrivate::ReceiveImageMeta(igtl::ClientSocket::Pointer& socket, igtl::MessageHeader::Pointer& header)
+int VisualBrainLabClientPrivate::ReceiveImageMeta(igtl::ClientSocket::Pointer& socket, igtl::MessageHeader::Pointer& header)
 {
-	Q_Q(VisualOpenIGTLinkClient);
+	Q_Q(VisualBrainLabClient);
 	std::cerr << "Receiving IMGMETA data type." << std::endl;
 
 	// Create a message buffer to receive transform data
@@ -371,10 +371,10 @@ int VisualOpenIGTLinkClientPrivate::ReceiveImageMeta(igtl::ClientSocket::Pointer
 
 }
 
-VisualOpenIGTLinkClient::VisualOpenIGTLinkClient(QObject* parent)
-	:QThread(parent), d_ptr(new VisualOpenIGTLinkClientPrivate(this))
+VisualBrainLabClient::VisualBrainLabClient(QObject* parent)
+	:QThread(parent), d_ptr(new VisualBrainLabClientPrivate(this))
 {
-	Q_D(VisualOpenIGTLinkClient);
+	Q_D(VisualBrainLabClient);
 	qRegisterMetaType<IMGMetaData>("IMGMetaData");
 	qRegisterMetaType<LBMetaData>("LBMetaData");
     
@@ -382,23 +382,23 @@ VisualOpenIGTLinkClient::VisualOpenIGTLinkClient(QObject* parent)
 	d->m_igtQueryInterval = 1000 / d->m_igtQueryFPS;
 }
 
-VisualOpenIGTLinkClient::~VisualOpenIGTLinkClient()
+VisualBrainLabClient::~VisualBrainLabClient()
 {
-	Q_D(VisualOpenIGTLinkClient);
+	Q_D(VisualBrainLabClient);
 
 }
 
-void VisualOpenIGTLinkClient::SetDeviceAddress(QString address /*= QString("127.0.0.1")*/, int port /*= 18944*/)
+void VisualBrainLabClient::SetDeviceAddress(QString address /*= QString("127.0.0.1")*/, int port /*= 18944*/)
 {
-	Q_D(VisualOpenIGTLinkClient);
+	Q_D(VisualBrainLabClient);
 
 	d->m_serverAddress = address;
 	d->m_serverPort = port;
 }
 
-void VisualOpenIGTLinkClient::QueryTrackingData()
+void VisualBrainLabClient::QueryTrackingData()
 {
-	Q_D(VisualOpenIGTLinkClient);
+	Q_D(VisualBrainLabClient);
 	emit signal_log("start QueryTrackData");
 	// Send request data
 	igtl::StartTrackingDataMessage::Pointer startTrackingDataMsg;
@@ -409,9 +409,9 @@ void VisualOpenIGTLinkClient::QueryTrackingData()
 
 }
 
-void VisualOpenIGTLinkClient::StopQueryTrackData()
+void VisualBrainLabClient::StopQueryTrackData()
 {
-	Q_D(VisualOpenIGTLinkClient);
+	Q_D(VisualBrainLabClient);
 	emit signal_log("StopQueryTrackData");
 	// Send request data
 	igtl::StopTrackingDataMessage::Pointer stopTrackingDataMsg;
@@ -421,9 +421,9 @@ void VisualOpenIGTLinkClient::StopQueryTrackData()
 	emit signal_log(QString::fromStdString(stopTrackingDataMsg->GetDeviceType()));
 }
 
-void VisualOpenIGTLinkClient::QueryImages()
+void VisualBrainLabClient::QueryImages()
 {
-	Q_D(VisualOpenIGTLinkClient);
+	Q_D(VisualBrainLabClient);
 	emit signal_log("QueryImages");
 	igtl::ImageMessage::Pointer imageMsg;
 	imageMsg = igtl::ImageMessage::New();
@@ -431,9 +431,9 @@ void VisualOpenIGTLinkClient::QueryImages()
 	d->m_igtSocket->Send(imageMsg->GetPackPointer(), imageMsg->GetPackSize());
 }
 
-void VisualOpenIGTLinkClient::QueryImage(std::string imageID)
+void VisualBrainLabClient::QueryImage(std::string imageID)
 {
-	Q_D(VisualOpenIGTLinkClient);
+	Q_D(VisualBrainLabClient);
 	emit signal_log("QueryImage");
 	igtl::GetImageMessage::Pointer getImageMsg;
 	getImageMsg = igtl::GetImageMessage::New();
@@ -441,9 +441,9 @@ void VisualOpenIGTLinkClient::QueryImage(std::string imageID)
 	d->m_igtSocket->Send(getImageMsg->GetPackPointer(), getImageMsg->GetPackSize());
 }
 
-void VisualOpenIGTLinkClient::QueryMetadata(int id)
+void VisualBrainLabClient::QueryMetadata(int id)
 {
-	Q_D(VisualOpenIGTLinkClient);
+	Q_D(VisualBrainLabClient);
 	if (id == OpenIGTLinkQueryType::TYPE_IMAGE)
 	{
 		emit signal_log("QueryImageMate");
@@ -472,9 +472,9 @@ void VisualOpenIGTLinkClient::QueryMetadata(int id)
 	}
 }
 
-void VisualOpenIGTLinkClient::onQueryOpenigtLinkServer()
+void VisualBrainLabClient::onQueryOpenigtLinkServer()
 {
-	Q_D(VisualOpenIGTLinkClient);
+	Q_D(VisualBrainLabClient);
 
 	emit signal_QueryOpenIGTLink();
 	for (int i = 0; i < d->m_igtQueryFPS; i++)
@@ -532,14 +532,14 @@ void VisualOpenIGTLinkClient::onQueryOpenigtLinkServer()
 	}
 }
 
-void VisualOpenIGTLinkClient::run()
+void VisualBrainLabClient::run()
 {
-	Q_D(VisualOpenIGTLinkClient);
+	Q_D(VisualBrainLabClient);
 
 	//while (!QThread::isInterruptionRequested())
 	while (!QThread::currentThread()->isInterruptionRequested())
 	{
-		//std::cout << "VisualOpenIGTLinkClient Work In Thread : " << QThread::currentThread() << std::endl;
+		//std::cout << "VisualBrainLabClient Work In Thread : " << QThread::currentThread() << std::endl;
 		//QThread::sleep(1);
 
 		if (!d->m_serverAddress.isEmpty() && 0 != d->m_serverPort)
@@ -570,9 +570,9 @@ void VisualOpenIGTLinkClient::run()
 	exec();
 }
 
-int VisualOpenIGTLinkClient::ConnectDevice()
+int VisualBrainLabClient::ConnectDevice()
 {
-	Q_D(VisualOpenIGTLinkClient);
+	Q_D(VisualBrainLabClient);
 
 	d->m_igtSocketResult = d->m_igtSocket->ConnectToServer(d->m_serverAddress.toLocal8Bit(), d->m_serverPort);
 	if (d->m_igtSocketResult != 0)
@@ -586,9 +586,9 @@ int VisualOpenIGTLinkClient::ConnectDevice()
 	return d->m_igtSocketResult;
 }
 
-void VisualOpenIGTLinkClient::QueryDevice()
+void VisualBrainLabClient::QueryDevice()
 {
-	Q_D(VisualOpenIGTLinkClient);
+	Q_D(VisualBrainLabClient);
 
 	//emit signal_QueryOpenIGTLink();
 	for (int i = 0; i < d->m_igtQueryFPS; i++)

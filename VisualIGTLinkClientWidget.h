@@ -1,7 +1,7 @@
 #pragma once
 #include <QWidget>
 #include "ui_VisualIGTLinkClientWidget.h"
-#include "VisualOpenIGTLinkClient.h"
+#include "VisualBrainLabClient.h"
 
 class VisualIGTLinkClientWidgetPrivate;
 class VisualIGTLinkClientWidget : public QWidget
