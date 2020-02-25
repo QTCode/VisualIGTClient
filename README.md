@@ -1,4 +1,4 @@
-# VisuaBrainLClient
+# VisualBrainLClient
 
 ##环境依赖
 * CMake 3.11.1+
